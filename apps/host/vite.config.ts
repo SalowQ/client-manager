@@ -1,0 +1,41 @@
+// apps/host/vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import federation from '@originjs/vite-plugin-federation';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    federation ({
+      name: 'host',
+      remotes: {
+        auth: 'http://localhost:3001/assets/remoteEntry.js',
+        clients: 'http://localhost:3002/assets/remoteEntry.js',
+      },
+      shared: ['react', 'react-dom', 'react-router-dom'],
+    }),
+    {
+      name: 'vite-plugin-reload-endpoint',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.originalUrl === '/__fullReload') {
+            server.hot.send({ type: 'full-reload' });
+
+            res.end('Full reload triggered');
+          } else {
+            next();
+          }
+        });
+      },
+    },
+  ],
+  server: {
+    port: 3000,
+  },
+  build: {
+    modulePreload: false,
+    target: 'esnext',
+    minify: false,
+    cssCodeSplit: false,
+  }
+})
