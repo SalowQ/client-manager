@@ -1,11 +1,16 @@
+import { Route, Routes } from "react-router-dom";
 import UiApp from "ui/UiApp";
 import "./App.css";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <>
-      <h1>auth</h1>
       <UiApp />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Login />} />
+      </Routes>
     </>
   );
 }
