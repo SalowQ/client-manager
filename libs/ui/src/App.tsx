@@ -1,7 +1,9 @@
-import "./App.css";
-
 function App() {
-  return <h2>ui</h2>;
+  return (
+    <div className="p-6 text-center text-2xl text-blue-500">
+      Tailwind está funcionando!
+    </div>
+  );
 }
 
 export default App;
