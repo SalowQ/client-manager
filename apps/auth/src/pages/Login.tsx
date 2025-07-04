@@ -18,13 +18,14 @@ const Login = () => {
     window.location.href = "/clients";
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="h-full bg-gray-50 flex items-center justify-center">
       <Suspense fallback={<div>Carregando UI...</div>}>
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-sm bg-white rounded-md shadow-sm p-8 flex flex-col items-center"
+          className="w-full rounded-lg shadow-md flex flex-col items-center justify-center space-y-6"
+          style={{ width: "80%", maxWidth: "500px" }}
         >
-          <h1 className="text-xl font-semibold mb-6 text-center">
+          <h1 className="text-2xl font-semibold text-center text-zinc-800">
             Olá, seja bem-vindo!
           </h1>
 
@@ -33,15 +34,14 @@ const Login = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Digite o seu nome:"
+            className="mb-2"
           />
 
           {error && (
-            <p className="text-red-500 text-sm mt-1 mb-2 w-full text-left">
-              {error}
-            </p>
+            <p className="text-red-500 text-sm w-full text-center">{error}</p>
           )}
 
-          <Button type="submit" variant="primary" className="mt-4">
+          <Button type="submit" variant="primary">
             Entrar
           </Button>
         </form>
