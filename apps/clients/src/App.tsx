@@ -1,10 +1,13 @@
-import './App.css'
+import UiApp from "ui/UiApp";
+import "./App.css";
 
 function App() {
-
   return (
-    <h1>clients</h1>
-  )
+    <>
+      <h1>clients</h1>
+      <UiApp />
+    </>
+  );
 }
 
-export default App
+export default App;

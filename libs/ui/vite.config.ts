@@ -1,4 +1,3 @@
-// apps/clientes/vite.config.ts
 import federation from "@originjs/vite-plugin-federation";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -7,15 +6,12 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "clients",
+      name: "ui",
       filename: "remoteEntry.js",
       exposes: {
-        "./ClientsApp": "./src/App.tsx",
+        "./UiApp": "./src/App.tsx",
       },
-      remotes: {
-        ui: "http://localhost:3003/assets/remoteEntry.js",
-      },
-      shared: ["react", "react-dom", "react-router-dom"],
+      shared: ["react", "react-dom"],
     }),
     {
       name: "vite-plugin-notify-host-on-rebuild",
@@ -34,7 +30,7 @@ export default defineConfig({
     },
   ],
   server: {
-    port: 3002,
+    port: 3003,
   },
   build: {
     modulePreload: false,
