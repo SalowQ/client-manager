@@ -13,6 +13,7 @@ export default defineConfig({
       remotes: {
         auth: "http://localhost:3001/assets/remoteEntry.js",
         clients: "http://localhost:3002/assets/remoteEntry.js",
+        ui: "http://localhost:3003/assets/remoteEntry.js",
       },
       shared: ["react", "react-dom", "react-router-dom"],
     }),

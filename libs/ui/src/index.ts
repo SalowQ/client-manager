@@ -6,4 +6,5 @@ export { default as Input } from "./components/Input/Input";
 export { default as Modal } from "./components/Modal/Modal";
 export { default as Pagination } from "./components/Pagination/Pagination";
 export { default as Sidebar } from "./components/Sidebar/Sidebar";
+export { default as ThemeToggleButton } from "./components/ThemeToggleButton/ThemeToggleButton";
 export { default as Topbar } from "./components/Topbar/Topbar";

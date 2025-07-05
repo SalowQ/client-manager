@@ -44,9 +44,12 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <Suspense fallback={<Loading />}>
-      {showSkeleton ? <Loading /> : <AppRoutes />}
-    </Suspense>
+    <>
+      <Suspense fallback={<Loading />}>
+        {showSkeleton ? <Loading /> : <AppRoutes />}
+      </Suspense>
+      {/* <ThemeToggleButton /> */}
+    </>
   );
 }
 
