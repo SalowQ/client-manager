@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 const AuthApp = lazy(() => import("auth/AuthApp"));
@@ -12,7 +12,8 @@ function App() {
         <Routes>
           <Route path="/auth/*" element={<AuthApp />} />
           <Route path="/clients/*" element={<ClientsApp />} />
-          <Route path="/" element={<h1>host</h1>} />
+          <Route path="/" element={<Navigate to="/auth/login" replace />} />
+          {/* <Route path="/" element={<h1>host</h1>} /> */}
         </Routes>
       </Suspense>
     </>
