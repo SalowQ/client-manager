@@ -46,7 +46,7 @@ const Login = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       localStorage.setItem("userName", formData.name);
-      window.location.href = "/clients";
+      window.location.href = "/clients/list";
     } catch (error) {
       setErrors({ submit: "Erro ao fazer login. Tente novamente." });
     } finally {

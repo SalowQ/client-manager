@@ -1,19 +1,103 @@
-const Topbar = () => (
-  <header className="w-full bg-white shadow flex items-center justify-between px-6 py-3">
-    <div className="font-bold text-xl text-orange-500">teddy</div>
-    <nav className="flex space-x-6">
-      <span className="text-gray-700 hover:text-orange-500 cursor-pointer">
-        Clientes
-      </span>
-      <span className="text-gray-700 hover:text-orange-500 cursor-pointer">
-        Chamados
-      </span>
-      <span className="text-gray-700 hover:text-orange-500 cursor-pointer">
-        Sair
-      </span>
-    </nav>
-    <div className="text-gray-600">Olá, Usuário</div>
+type MenuItem = {
+  label: string;
+  url?: string;
+  onClick?: () => void;
+};
+
+export type TopbarProps = {
+  userName?: string;
+  menuItems?: MenuItem[];
+};
+
+const Topbar = ({ userName = "Usuário", menuItems = [] }: TopbarProps) => (
+  <header className="w-full bg-white shadow px-4 md:px-8 py-2 md:py-3 flex items-center justify-between">
+    {/* Botão hamburguer à esquerda */}
+    <div className="w-[48px] flex items-center justify-start">
+      <button
+        className="p-2 rounded hover:bg-gray-100 focus:outline-none"
+        aria-label="Abrir menu"
+        type="button"
+      >
+        <svg
+          className="w-6 h-6 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </div>
+
+    {/* Grupo central com largura máxima e espaçamento equilibrado */}
+    <div className="flex-1 mx-auto max-w-8xl w-full flex items-center justify-between">
+      {/* Logo */}
+      <div className="min-w-[110px]">
+        <img src="/teddy-logo.png" alt="teddy logo" className="h-7 w-auto" />
+      </div>
+
+      {/* Menu dinâmico */}
+      <nav className="flex items-center space-x-6">
+        {menuItems.map((item, idx) => {
+          const isActive = item.url && window.location.pathname === item.url;
+          return (
+            <span
+              key={item.label + idx}
+              className={`font-regular cursor-pointer ${
+                isActive
+                  ? "text-orange-500 underline"
+                  : "text-gray-700 hover:text-orange-500"
+              }`}
+              onClick={() => {
+                if (item.onClick) {
+                  item.onClick();
+                } else if (item.url) {
+                  window.location.href = item.url;
+                }
+              }}
+            >
+              {item.label}
+            </span>
+          );
+        })}
+      </nav>
+
+      {/* Saudação */}
+      <div className="text-gray-600 text-sm min-w-[120px] text-right">
+        Olá, <b>{userName}!</b>
+      </div>
+    </div>
+
+    {/* Espaço espelhado do botão hamburguer */}
+    <div className="w-[48px]" />
   </header>
 );
 
 export default Topbar;
+
+// const Topbar = ({ userName = "Usuário" }: TopbarProps) => (
+//   <header className="w-full bg-white shadow flex items-center justify-between px-6 py-3">
+//     <div className="font-bold text-xl text-orange-500">teddy</div>
+//     <nav className="flex space-x-6">
+//       <span className="text-gray-700 hover:text-orange-500 cursor-pointer">
+//         Clientes
+//       </span>
+//       <span className="text-gray-700 hover:text-orange-500 cursor-pointer">
+//         Chamados
+//       </span>
+//       <span className="text-gray-700 hover:text-orange-500 cursor-pointer">
+//         Sair
+//       </span>
+//     </nav>
+//     <div className="text-gray-600">
+//       Olá, <b>{userName}</b>
+//     </div>
+//   </header>
+// );
+
+// export default Topbar;
