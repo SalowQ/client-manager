@@ -1,22 +1,51 @@
-import { Suspense, lazy } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
+import Loading from "./components/Loading";
+import NotFound from "./pages/NotFound";
 
 const AuthApp = lazy(() => import("auth/AuthApp"));
 const ClientsApp = lazy(() => import("clients/ClientsApp"));
 
-function App() {
+function AppRoutes() {
+  const location = useLocation();
+
+  const isValidRoute =
+    location.pathname === "/" ||
+    location.pathname.startsWith("/auth/") ||
+    location.pathname.startsWith("/clients/");
+
+  if (!isValidRoute) {
+    return <NotFound />;
+  }
+
   return (
-    <>
-      <Suspense fallback={<div>Carregando módulo...</div>}>
-        <Routes>
-          <Route path="/auth/*" element={<AuthApp />} />
-          <Route path="/clients/*" element={<ClientsApp />} />
-          <Route path="/" element={<Navigate to="/auth/login" replace />} />
-          {/* <Route path="/" element={<h1>host</h1>} /> */}
-        </Routes>
-      </Suspense>
-    </>
+    <Routes>
+      <Route path="/auth/*" element={<AuthApp />} />
+      <Route path="/clients/*" element={<ClientsApp />} />
+      <Route path="/" element={<Navigate to="/auth/login" replace />} />
+    </Routes>
+  );
+}
+
+function App() {
+  const location = useLocation();
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    setShowSkeleton(true);
+
+    const timer = setTimeout(() => {
+      setShowSkeleton(false);
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  return (
+    <Suspense fallback={<Loading />}>
+      {showSkeleton ? <Loading /> : <AppRoutes />}
+    </Suspense>
   );
 }
 
