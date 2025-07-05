@@ -23,6 +23,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/auth/*" element={<AuthApp />} />
       <Route path="/clients/*" element={<ClientsApp />} />
+      <Route path="/404" element={<NotFound />} />
       <Route path="/" element={<Navigate to="/auth/login" replace />} />
     </Routes>
   );
