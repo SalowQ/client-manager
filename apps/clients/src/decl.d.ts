@@ -7,7 +7,7 @@ declare module "ui/components" {
   import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
   export const Button: React.FC<
     ButtonHTMLAttributes<HTMLButtonElement> & {
-      variant?: "primary" | "secondary";
+      variant?: "primary" | "secondary" | "outline";
     }
   >;
   export const Input: React.FC<InputHTMLAttributes<HTMLInputElement>>;
@@ -19,7 +19,11 @@ declare module "ui/components" {
     title: string;
     children?: React.ReactNode;
   }>;
-  export const Pagination: React.FC;
+  export const Pagination: React.FC<{
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  }>;
   export const Sidebar: React.FC;
   export const Topbar: React.FC<{
     userName?: string;
