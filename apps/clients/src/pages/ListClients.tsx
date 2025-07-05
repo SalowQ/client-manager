@@ -8,7 +8,7 @@ import {
   Pagination,
 } from "ui/components";
 
-const mockClients = Array.from({ length: 50 }, (_, i) => ({
+const mockClients = Array.from({ length: 80 }, (_, i) => ({
   id: i + 1,
   name: "Eduardo",
   salary: "R$3.500,00",
@@ -63,7 +63,15 @@ const ListClients = () => {
           </div>
           <CardGrid>
             {clientsToShow.map((c) => (
-              <ClientCard key={c.id} />
+              <ClientCard
+                key={c.id}
+                name={c.name}
+                salary={c.salary}
+                company={c.company}
+                onAdd={() => alert(`Adicionar ${c.name}`)}
+                onEdit={() => alert(`Editar ${c.name}`)}
+                onDelete={() => alert(`Excluir ${c.name}`)}
+              />
             ))}
           </CardGrid>
           <div className="flex flex-col items-center mt-8 gap-4">

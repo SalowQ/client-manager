@@ -12,7 +12,14 @@ declare module "ui/components" {
   >;
   export const Input: React.FC<InputHTMLAttributes<HTMLInputElement>>;
   export const CardGrid: React.FC<{ children: React.ReactNode }>;
-  export const ClientCard: React.FC;
+  export const ClientCard: React.FC<{
+    name: string;
+    salary: string;
+    company: string;
+    onAdd?: () => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
+  }>;
   export const ClientForm: React.FC;
   export const Modal: React.FC<{
     open: boolean;
