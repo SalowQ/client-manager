@@ -27,8 +27,11 @@ const ClientsLayout = ({ children }: ClientsLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <Topbar userName={userName} menuItems={menuItems} />
-      {children}
+      {/* Container centralizado aplicado aqui */}
+      <div className="w-full max-w-8xl mx-auto">
+        <Topbar userName={userName} menuItems={menuItems} />
+        {children}
+      </div>
     </div>
   );
 };

@@ -41,17 +41,15 @@ const Topbar = ({ userName = "Usuário", menuItems = [] }: TopbarProps) => (
         <img src="/teddy-logo.png" alt="teddy logo" className="h-7 w-auto" />
       </div>
 
-      {/* Menu dinâmico */}
-      <nav className="flex items-center space-x-6">
+      {/* Menu dinâmico - escondido em telas pequenas */}
+      <nav className="hidden md:flex items-center space-x-6">
         {menuItems.map((item, idx) => {
           const isActive = item.url && window.location.pathname === item.url;
           return (
             <span
               key={item.label + idx}
-              className={`font-regular cursor-pointer ${
-                isActive
-                  ? "text-orange-500 underline"
-                  : "text-gray-700 hover:text-orange-500"
+              className={`font-medium cursor-pointer text-gray-700 hover:text-orange-500 ${
+                isActive ? "text-orange-500 underline" : ""
               }`}
               onClick={() => {
                 if (item.onClick) {
