@@ -1,7 +1,6 @@
 export { default as Button } from "./components/Button/Button";
 export { default as CardGrid } from "./components/CardGrid/CardGrid";
 export { default as ClientCard } from "./components/ClientCard/ClientCard";
-export { default as ClientForm } from "./components/ClientForm/ClientForm";
 export { default as Input } from "./components/Input/Input";
 export { default as Modal } from "./components/Modal/Modal";
 export { default as Pagination } from "./components/Pagination/Pagination";

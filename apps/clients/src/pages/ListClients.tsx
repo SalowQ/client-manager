@@ -1,21 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Button,
   CardGrid,
   ClientCard,
-  ClientForm,
+  Input,
   Modal,
   Pagination,
 } from "ui/components";
 
 const mockClients = Array.from({ length: 80 }, (_, i) => ({
   id: i + 1,
-  name: "Eduardo",
-  salary: "R$3.500,00",
-  company: "R$120.000,00",
+  name: `Cliente ${i + 1}`,
+  salary: 3500 + i * 10,
+  companyValuation: 100000 + i * 1000,
+  createdAt: new Date(2025, 6, 6, 4, 0, 53, 200).toISOString(),
+  updatedAt: new Date(2025, 6, 6, 4, 0, 53, 200).toISOString(),
 }));
 
 const CLIENTS_PER_PAGE_OPTIONS = [8, 16, 32, 64];
+
+type Client = {
+  id: number;
+  name: string;
+  salary: number;
+  companyValuation: number;
+  createdAt: string;
+  updatedAt: string;
+};
+type FormField = "name" | "salary" | "companyValuation";
 
 const ListClients = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,6 +36,110 @@ const ListClients = () => {
     CLIENTS_PER_PAGE_OPTIONS[1]
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletingClient, setDeletingClient] = useState<Client | null>(null);
+  const [selectedClients, setSelectedClients] = useState<number[]>([]);
+
+  // Estados do formulário
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+    clearErrors,
+  } = useForm({
+    defaultValues: { name: "", salary: "", companyValuation: "" },
+  });
+
+  function formatMoneyNumber(value: number) {
+    return value.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  function formatMoney(value: string) {
+    let v = value.replace(/\D/g, "");
+    const num = Number(v);
+    if (!v || num === 0) return "";
+    v = (num / 100).toFixed(2) + "";
+    v = v.replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    return "R$ " + v;
+  }
+
+  function handleMaskedChange(
+    field: FormField,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const raw = e.target.value.replace(/\D/g, "");
+    const num = Number(raw);
+    if (!raw || num === 0) {
+      setValue(field, "");
+      if (errors[field]) clearErrors(field);
+      return;
+    }
+    setValue(field, formatMoney(e.target.value));
+    register(field).onChange(e);
+    if (errors[field]) clearErrors(field);
+  }
+
+  function renderInput({
+    label,
+    name,
+    placeholder,
+    maskMoney = false,
+    type = "text",
+  }: {
+    label: string;
+    name: FormField;
+    placeholder: string;
+    maskMoney?: boolean;
+    type?: string;
+  }) {
+    return (
+      <label className="flex flex-col text-sm">
+        {label}
+        <Input
+          className="border rounded px-2 py-1 mt-1"
+          type={type}
+          placeholder={placeholder}
+          {...register(name, { required: `Preencha o ${label.toLowerCase()}` })}
+          aria-invalid={!!errors[name]}
+          aria-describedby={errors[name] ? errors[name].message : undefined}
+          inputMode={maskMoney ? "numeric" : undefined}
+          onChange={
+            maskMoney
+              ? (e) => handleMaskedChange(name, e)
+              : (e) => {
+                  register(name).onChange(e);
+                  if (errors[name]) clearErrors(name);
+                }
+          }
+        />
+        {errors[name] && (
+          <span className="text-red-500 text-xs mt-1">
+            {errors[name]?.message as string}
+          </span>
+        )}
+      </label>
+    );
+  }
+
+  useEffect(() => {
+    if (editingClient) {
+      setValue("name", editingClient.name);
+      setValue("salary", formatMoneyNumber(editingClient.salary));
+      setValue(
+        "companyValuation",
+        formatMoneyNumber(editingClient.companyValuation)
+      );
+    } else {
+      reset();
+    }
+  }, [editingClient, setValue, reset]);
 
   const totalClients = mockClients.length;
   const totalPages = Math.ceil(totalClients / clientsPerPage);
@@ -36,6 +153,44 @@ const ListClients = () => {
     setClientsPerPage(Number(e.target.value));
     setCurrentPage(1);
   };
+
+  // Função para fechar e resetar o modal
+  function handleCloseModal() {
+    setModalOpen(false);
+    setEditingClient(null);
+    reset();
+  }
+
+  // Função para abrir modal para editar
+  function handleEditClient(client: Client) {
+    setEditingClient(client);
+    setModalOpen(true);
+  }
+
+  function handleDeleteClient(client: Client) {
+    setDeletingClient(client);
+    setDeleteModalOpen(true);
+  }
+
+  function handleCloseDeleteModal() {
+    setDeleteModalOpen(false);
+    setDeletingClient(null);
+  }
+
+  function handleConfirmDelete() {
+    alert(`Cliente excluído: ${deletingClient?.name}`);
+    handleCloseDeleteModal();
+  }
+
+  function handleToggleSelectClient(client: Client) {
+    setSelectedClients((prev) => {
+      if (prev.includes(client.id)) {
+        return prev.filter((id) => id !== client.id);
+      } else {
+        return [...prev, client.id];
+      }
+    });
+  }
 
   return (
     <>
@@ -66,11 +221,12 @@ const ListClients = () => {
               <ClientCard
                 key={c.id}
                 name={c.name}
-                salary={c.salary}
-                company={c.company}
-                onAdd={() => alert(`Adicionar ${c.name}`)}
-                onEdit={() => alert(`Editar ${c.name}`)}
-                onDelete={() => alert(`Excluir ${c.name}`)}
+                salary={formatMoneyNumber(c.salary)}
+                company={formatMoneyNumber(c.companyValuation)}
+                onAdd={() => handleToggleSelectClient(c)}
+                isSelected={selectedClients.includes(c.id)}
+                onEdit={() => handleEditClient(c)}
+                onDelete={() => handleDeleteClient(c)}
               />
             ))}
           </CardGrid>
@@ -86,11 +242,65 @@ const ListClients = () => {
           </div>
         </main>
       </div>
-      <Modal open={modalOpen} title="Criar cliente">
-        <ClientForm />
-        <div className="flex justify-end mt-2">
-          <Button variant="secondary" onClick={() => setModalOpen(false)}>
-            Fechar
+      <Modal
+        open={modalOpen}
+        title={editingClient ? "Editar cliente" : "Criar cliente"}
+        onClose={handleCloseModal}
+      >
+        <form
+          className="flex flex-col gap-3 p-4"
+          onSubmit={handleSubmit((data) => {
+            if (editingClient) {
+              alert(
+                `Cliente editado: ${data.name}, ${data.salary}, ${data.companyValuation}`
+              );
+            } else {
+              alert(
+                `Cliente criado: ${data.name}, ${data.salary}, ${data.companyValuation}`
+              );
+            }
+            handleCloseModal();
+          })}
+        >
+          {renderInput({
+            label: "Nome",
+            name: "name",
+            placeholder: "Digite o nome:",
+          })}
+          {renderInput({
+            label: "Salário",
+            name: "salary",
+            placeholder: "Digite o salário:",
+            maskMoney: true,
+          })}
+          {renderInput({
+            label: "Valor da empresa",
+            name: "companyValuation",
+            placeholder: "Digite o valor da empresa:",
+            maskMoney: true,
+          })}
+          <Button
+            type="submit"
+            className="bg-orange-500 text-white rounded px-4 py-2 mt-2 hover:bg-orange-600"
+          >
+            {editingClient ? "Editar cliente" : "Criar cliente"}
+          </Button>
+        </form>
+      </Modal>
+      <Modal
+        open={deleteModalOpen}
+        title="Excluir cliente:"
+        onClose={handleCloseDeleteModal}
+      >
+        <div className="p-4">
+          <p>
+            Você está prestes a excluir o cliente: <b>{deletingClient?.name}</b>
+          </p>
+          <Button
+            className="bg-orange-500 text-white rounded px-4 py-2 mt-4 w-full hover:bg-orange-600"
+            onClick={handleConfirmDelete}
+          >
+            Excluir cliente
           </Button>
         </div>
       </Modal>

@@ -59,7 +59,7 @@ const Sidebar = ({ open, onClose, items, title, onNavigate }: SidebarProps) => {
         <div className="h-20 bg-zinc-800 flex items-center justify-center rounded-tr-2xl relative">
           {title || (
             <img
-              src="/logo.svg"
+              src="/teddy-logo-branco.png"
               alt="Logo"
               className="h-8 object-contain transform scale-200"
             />

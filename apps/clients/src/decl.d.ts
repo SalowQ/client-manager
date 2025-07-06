@@ -17,6 +17,7 @@ declare module "ui/components" {
     salary: string;
     company: string;
     onAdd?: () => void;
+    isSelected?: boolean;
     onEdit?: () => void;
     onDelete?: () => void;
   }>;
@@ -25,6 +26,7 @@ declare module "ui/components" {
     open: boolean;
     title: string;
     children?: React.ReactNode;
+    onClose: () => void;
   }>;
   export const Pagination: React.FC<{
     currentPage: number;

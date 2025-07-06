@@ -5,6 +5,7 @@ type ClientCardProps = {
   onAdd?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  isSelected?: boolean;
 };
 
 const iconClass = "w-6 h-6 cursor-pointer";
@@ -16,6 +17,7 @@ const ClientCard = ({
   onAdd,
   onEdit,
   onDelete,
+  isSelected = false,
 }: ClientCardProps) => (
   <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[200px] w-full mx-auto">
     <div className="font-bold text-lg text-center mb-2">{name}</div>
@@ -24,21 +26,35 @@ const ClientCard = ({
       Empresa: {company}
     </div>
     <div className="flex w-full justify-between items-center mt-auto pt-2">
-      {/* Botão de adicionar */}
-      <button onClick={onAdd} aria-label="Adicionar">
-        <svg
-          className={iconClass}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
+      {/* Botão de adicionar/remover */}
+      <button onClick={onAdd} aria-label={isSelected ? "Remover" : "Adicionar"}>
+        {isSelected ? (
+          // Ícone de remover (traço)
+          <svg
+            className={iconClass}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+          </svg>
+        ) : (
+          // Ícone de adicionar (mais)
+          <svg
+            className={iconClass}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+        )}
       </button>
       {/* Botão de editar */}
       <button onClick={onEdit} aria-label="Editar">
