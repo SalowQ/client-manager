@@ -23,7 +23,6 @@ import {
 
 type FormField = "name" | "salary" | "companyValuation";
 
-// Tipo para o formulário (aceita strings para campos com máscara)
 type ClientFormData = {
   name: string;
   salary: string;
@@ -65,15 +64,10 @@ const ListClients = () => {
   const clients = data?.clients ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  // Debug: log para verificar o formato dos dados
-  console.log("Clients data:", data);
-  console.log("Clients array:", clients);
-
   const createClientMutation = useCreateClient();
   const updateClientMutation = useUpdateClient();
   const deleteClientMutation = useDeleteClient();
 
-  // Estados do formulário
   const {
     register,
     handleSubmit,
@@ -81,7 +75,6 @@ const ListClients = () => {
     reset,
     formState: { errors },
     clearErrors,
-    watch,
   } = useForm<ClientFormData>({
     defaultValues: { name: "", salary: "", companyValuation: "" },
   });
@@ -174,7 +167,7 @@ const ListClients = () => {
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setClientsPerPage(Number(e.target.value));
-    setCurrentPage(1); // volta para a primeira página ao mudar o limit
+    setCurrentPage(1);
   };
 
   // ============================================================================
@@ -206,7 +199,6 @@ const ListClients = () => {
     if (deletingClient) {
       deleteClientMutation.mutate(deletingClient.id, {
         onSuccess: () => {
-          alert(`Cliente excluído: ${deletingClient.name}`);
           handleCloseDeleteModal();
         },
       });
@@ -234,7 +226,6 @@ const ListClients = () => {
   // RENDER
   // ============================================================================
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -243,7 +234,6 @@ const ListClients = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -312,7 +302,6 @@ const ListClients = () => {
         <form
           className="flex flex-col gap-3 p-4"
           onSubmit={handleSubmit((data: ClientFormData) => {
-            // Converter dados do formulário para o tipo da API
             const createPayload: CreateClientPayload = {
               name: data.name,
               salary: parseFloat(data.salary.replace(/\D/g, "")) / 100,
@@ -321,7 +310,6 @@ const ListClients = () => {
             };
 
             if (editingClient) {
-              // Atualizar cliente
               updateClientMutation.mutate(
                 {
                   id: editingClient.id,
@@ -329,15 +317,11 @@ const ListClients = () => {
                 },
                 {
                   onSuccess: () => {
-                    alert(
-                      `Cliente editado: ${data.name}, ${data.salary}, ${data.companyValuation}`
-                    );
                     handleCloseModal();
                   },
                 }
               );
             } else {
-              // Criar cliente
               createClientMutation.mutate(createPayload, {
                 onSuccess: () => {
                   handleCloseModal();

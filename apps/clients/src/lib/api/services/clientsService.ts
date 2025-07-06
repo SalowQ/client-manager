@@ -69,7 +69,7 @@ export const clientsService = {
 
   async update(id: number, clientData: Partial<ApiClient>): Promise<ApiClient> {
     try {
-      const response = await apiClient.put<ApiClient>(
+      const response = await apiClient.patch<ApiClient>(
         CLIENTS_ENDPOINTS.update(id),
         clientData
       );

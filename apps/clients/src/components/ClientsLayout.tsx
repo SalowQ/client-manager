@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sidebar, Topbar } from "ui/components";
+import { Sidebar, Toast, Topbar } from "ui/components";
 import { ReactQueryProvider } from "../lib/react-query/provider";
 
 // ============================================================================
@@ -133,6 +133,7 @@ const ClientsLayout = ({ children }: ClientsLayoutProps) => {
             onNavigate={handleNavigate}
           />
           {children}
+          <Toast />
         </div>
       </SelectedClientsProvider>
     </ReactQueryProvider>
