@@ -8,17 +8,27 @@ import {
   Modal,
   Pagination,
 } from "ui/components";
+import { useSelectedClients, type Client } from "../components/ClientsLayout";
+import type { CreateClientPayload } from "../lib/api/types";
 import {
-  mockClients,
-  useSelectedClients,
-  type Client,
-} from "../components/ClientsLayout";
+  useClients,
+  useCreateClient,
+  useDeleteClient,
+  useUpdateClient,
+} from "../lib/react-query/hooks";
 
 // ============================================================================
 // TIPOS
 // ============================================================================
 
 type FormField = "name" | "salary" | "companyValuation";
+
+// Tipo para o formulário (aceita strings para campos com máscara)
+type ClientFormData = {
+  name: string;
+  salary: string;
+  companyValuation: string;
+};
 
 // ============================================================================
 // CONSTANTES
@@ -46,6 +56,23 @@ const ListClients = () => {
 
   const { selectedClients, toggleSelectClient } = useSelectedClients();
 
+  // ============================================================================
+  // REACT QUERY HOOKS
+  // ============================================================================
+
+  const { data, isLoading, error } = useClients(currentPage, clientsPerPage);
+
+  const clients = data?.clients ?? [];
+  const totalPages = data?.totalPages ?? 1;
+
+  // Debug: log para verificar o formato dos dados
+  console.log("Clients data:", data);
+  console.log("Clients array:", clients);
+
+  const createClientMutation = useCreateClient();
+  const updateClientMutation = useUpdateClient();
+  const deleteClientMutation = useDeleteClient();
+
   // Estados do formulário
   const {
     register,
@@ -54,7 +81,8 @@ const ListClients = () => {
     reset,
     formState: { errors },
     clearErrors,
-  } = useForm({
+    watch,
+  } = useForm<ClientFormData>({
     defaultValues: { name: "", salary: "", companyValuation: "" },
   });
 
@@ -132,11 +160,6 @@ const ListClients = () => {
                 }
           }
         />
-        {errors[name] && (
-          <span className="text-red-500 text-xs mt-1">
-            {errors[name]?.message as string}
-          </span>
-        )}
       </label>
     );
   }
@@ -145,17 +168,13 @@ const ListClients = () => {
   // PAGINAÇÃO
   // ============================================================================
 
-  const totalClients = mockClients.length;
-  const totalPages = Math.ceil(totalClients / clientsPerPage);
-  const startIdx = (currentPage - 1) * clientsPerPage;
-  const endIdx = startIdx + clientsPerPage;
-  const clientsToShow = mockClients.slice(startIdx, endIdx);
+  const totalClients = clients.length;
 
   const handleClientsPerPageChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setClientsPerPage(Number(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(1); // volta para a primeira página ao mudar o limit
   };
 
   // ============================================================================
@@ -184,8 +203,14 @@ const ListClients = () => {
   }
 
   function handleConfirmDelete() {
-    alert(`Cliente excluído: ${deletingClient?.name}`);
-    handleCloseDeleteModal();
+    if (deletingClient) {
+      deleteClientMutation.mutate(deletingClient.id, {
+        onSuccess: () => {
+          alert(`Cliente excluído: ${deletingClient.name}`);
+          handleCloseDeleteModal();
+        },
+      });
+    }
   }
 
   // ============================================================================
@@ -208,6 +233,26 @@ const ListClients = () => {
   // ============================================================================
   // RENDER
   // ============================================================================
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-lg">Carregando clientes...</div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-lg text-red-500">
+          Erro ao carregar clientes. Tente novamente.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -234,7 +279,7 @@ const ListClients = () => {
             </div>
           </div>
           <CardGrid>
-            {clientsToShow.map((c) => (
+            {clients.map((c: Client) => (
               <ClientCard
                 key={c.id}
                 name={c.name}
@@ -266,17 +311,39 @@ const ListClients = () => {
       >
         <form
           className="flex flex-col gap-3 p-4"
-          onSubmit={handleSubmit((data) => {
+          onSubmit={handleSubmit((data: ClientFormData) => {
+            // Converter dados do formulário para o tipo da API
+            const createPayload: CreateClientPayload = {
+              name: data.name,
+              salary: parseFloat(data.salary.replace(/\D/g, "")) / 100,
+              companyValuation:
+                parseFloat(data.companyValuation.replace(/\D/g, "")) / 100,
+            };
+
             if (editingClient) {
-              alert(
-                `Cliente editado: ${data.name}, ${data.salary}, ${data.companyValuation}`
+              // Atualizar cliente
+              updateClientMutation.mutate(
+                {
+                  id: editingClient.id,
+                  data: createPayload,
+                },
+                {
+                  onSuccess: () => {
+                    alert(
+                      `Cliente editado: ${data.name}, ${data.salary}, ${data.companyValuation}`
+                    );
+                    handleCloseModal();
+                  },
+                }
               );
             } else {
-              alert(
-                `Cliente criado: ${data.name}, ${data.salary}, ${data.companyValuation}`
-              );
+              // Criar cliente
+              createClientMutation.mutate(createPayload, {
+                onSuccess: () => {
+                  handleCloseModal();
+                },
+              });
             }
-            handleCloseModal();
           })}
         >
           {renderInput({
@@ -299,8 +366,15 @@ const ListClients = () => {
           <Button
             type="submit"
             className="bg-orange-500 text-white rounded px-4 py-2 mt-2 hover:bg-orange-600"
+            disabled={
+              createClientMutation.isPending || updateClientMutation.isPending
+            }
           >
-            {editingClient ? "Editar cliente" : "Criar cliente"}
+            {createClientMutation.isPending || updateClientMutation.isPending
+              ? "Salvando..."
+              : editingClient
+              ? "Editar cliente"
+              : "Criar cliente"}
           </Button>
         </form>
       </Modal>
@@ -316,8 +390,11 @@ const ListClients = () => {
           <Button
             className="bg-orange-500 text-white rounded px-4 py-2 mt-4 w-full hover:bg-orange-600"
             onClick={handleConfirmDelete}
+            disabled={deleteClientMutation.isPending}
           >
-            Excluir cliente
+            {deleteClientMutation.isPending
+              ? "Excluindo..."
+              : "Excluir cliente"}
           </Button>
         </div>
       </Modal>

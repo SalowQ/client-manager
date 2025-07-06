@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar, Topbar } from "ui/components";
+import { ReactQueryProvider } from "../lib/react-query/provider";
 
 // ============================================================================
 // TIPOS
@@ -66,19 +67,6 @@ export function useSelectedClients() {
 }
 
 // ============================================================================
-// DADOS MOCK
-// ============================================================================
-
-export const mockClients = Array.from({ length: 80 }, (_, i) => ({
-  id: i + 1,
-  name: `Cliente ${i + 1}`,
-  salary: 3500 + i * 10,
-  companyValuation: 100000 + i * 1000,
-  createdAt: new Date(2025, 6, 6, 4, 0, 53, 200).toISOString(),
-  updatedAt: new Date(2025, 6, 6, 4, 0, 53, 200).toISOString(),
-}));
-
-// ============================================================================
 // MENU ITEMS
 // ============================================================================
 
@@ -126,26 +114,28 @@ const ClientsLayout = ({ children }: ClientsLayoutProps) => {
   };
 
   return (
-    <SelectedClientsProvider>
-      <div className="min-h-screen bg-gray-100 flex flex-col">
-        <Topbar
-          userName={userName}
-          menuItems={menuItems}
-          onMenuClick={() => setSidebarOpen(true)}
-          onNavigate={handleNavigate}
-        />
-        <Sidebar
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          items={menuItems}
-          title={
-            <img src="/teddy-logo-branco.png" alt="Logo" className="h-10" />
-          }
-          onNavigate={handleNavigate}
-        />
-        {children}
-      </div>
-    </SelectedClientsProvider>
+    <ReactQueryProvider>
+      <SelectedClientsProvider>
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+          <Topbar
+            userName={userName}
+            menuItems={menuItems}
+            onMenuClick={() => setSidebarOpen(true)}
+            onNavigate={handleNavigate}
+          />
+          <Sidebar
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            items={menuItems}
+            title={
+              <img src="/teddy-logo-branco.png" alt="Logo" className="h-10" />
+            }
+            onNavigate={handleNavigate}
+          />
+          {children}
+        </div>
+      </SelectedClientsProvider>
+    </ReactQueryProvider>
   );
 };
 

@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ClientsLayout from "./components/ClientsLayout";
-import { queryClient } from "./lib/react-query";
+import { queryClient } from "./lib/react-query/config";
 import ListClients from "./pages/ListClients";
 import ListSelectedClients from "./pages/ListSelectedClients";
 

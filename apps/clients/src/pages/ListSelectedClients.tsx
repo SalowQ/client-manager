@@ -1,5 +1,6 @@
 import { Button, CardGrid, ClientCard } from "ui/components";
-import { mockClients, useSelectedClients } from "../components/ClientsLayout";
+import { useSelectedClients, type Client } from "../components/ClientsLayout";
+import { useClients } from "../lib/react-query/hooks";
 
 function formatMoneyNumber(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -8,8 +9,41 @@ function formatMoneyNumber(value: number) {
 const ListSelectedClients = () => {
   const { selectedClients, toggleSelectClient, clearSelectedClients } =
     useSelectedClients();
-  const selected = mockClients.filter((c) => selectedClients.includes(c.id));
 
+  const { data: clientsData = [], isLoading, error } = useClients();
+
+  // Garantir que clients seja sempre um array
+  const clients = Array.isArray(clientsData) ? clientsData : [];
+
+  const selected = clients.filter((c: Client) =>
+    selectedClients.includes(c.id)
+  );
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="bg-gray-100 p-12 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg">Carregando clientes...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="bg-gray-100 p-12 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-red-500">
+            Erro ao carregar clientes. Tente novamente.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Se não há clientes selecionados, exibe apenas a mensagem
   if (selected.length === 0) {
     return (
       <div className="bg-gray-100 p-12 flex items-center justify-center">
@@ -29,7 +63,7 @@ const ListSelectedClients = () => {
     <div className="min-h-screen bg-gray-100 p-8">
       <h2 className="text-xl font-bold mb-4">Clientes selecionados:</h2>
       <CardGrid>
-        {selected.map((c) => (
+        {selected.map((c: Client) => (
           <ClientCard
             key={c.id}
             name={c.name}
@@ -37,21 +71,18 @@ const ListSelectedClients = () => {
             company={formatMoneyNumber(c.companyValuation)}
             onAdd={() => toggleSelectClient(c)}
             isSelected={true}
-            hideEditDelete={true}
           />
         ))}
       </CardGrid>
-      {selected.length > 0 && (
-        <div className="flex justify-center mt-6">
-          <Button
-            variant="outline"
-            className="border-orange-500 text-orange-500 w-full"
-            onClick={clearSelectedClients}
-          >
-            Limpar clientes selecionados
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-center mt-6">
+        <Button
+          variant="outline"
+          className="border-orange-500 text-orange-500 w-full"
+          onClick={clearSelectedClients}
+        >
+          Limpar clientes selecionados
+        </Button>
+      </div>
     </div>
   );
 };
