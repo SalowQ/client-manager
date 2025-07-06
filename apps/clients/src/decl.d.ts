@@ -20,6 +20,7 @@ declare module "ui/components" {
     isSelected?: boolean;
     onEdit?: () => void;
     onDelete?: () => void;
+    hideEditDelete?: boolean;
   }>;
   export const ClientForm: React.FC;
   export const Modal: React.FC<{

@@ -8,29 +8,33 @@ import {
   Modal,
   Pagination,
 } from "ui/components";
+import {
+  mockClients,
+  useSelectedClients,
+  type Client,
+} from "../components/ClientsLayout";
 
-const mockClients = Array.from({ length: 80 }, (_, i) => ({
-  id: i + 1,
-  name: `Cliente ${i + 1}`,
-  salary: 3500 + i * 10,
-  companyValuation: 100000 + i * 1000,
-  createdAt: new Date(2025, 6, 6, 4, 0, 53, 200).toISOString(),
-  updatedAt: new Date(2025, 6, 6, 4, 0, 53, 200).toISOString(),
-}));
+// ============================================================================
+// TIPOS
+// ============================================================================
+
+type FormField = "name" | "salary" | "companyValuation";
+
+// ============================================================================
+// CONSTANTES
+// ============================================================================
 
 const CLIENTS_PER_PAGE_OPTIONS = [8, 16, 32, 64];
 
-type Client = {
-  id: number;
-  name: string;
-  salary: number;
-  companyValuation: number;
-  createdAt: string;
-  updatedAt: string;
-};
-type FormField = "name" | "salary" | "companyValuation";
+// ============================================================================
+// COMPONENTE PRINCIPAL
+// ============================================================================
 
 const ListClients = () => {
+  // ============================================================================
+  // ESTADOS
+  // ============================================================================
+
   const [modalOpen, setModalOpen] = useState(false);
   const [clientsPerPage, setClientsPerPage] = useState(
     CLIENTS_PER_PAGE_OPTIONS[1]
@@ -39,7 +43,8 @@ const ListClients = () => {
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
-  const [selectedClients, setSelectedClients] = useState<number[]>([]);
+
+  const { selectedClients, toggleSelectClient } = useSelectedClients();
 
   // Estados do formulário
   const {
@@ -52,6 +57,10 @@ const ListClients = () => {
   } = useForm({
     defaultValues: { name: "", salary: "", companyValuation: "" },
   });
+
+  // ============================================================================
+  // UTILITÁRIOS
+  // ============================================================================
 
   function formatMoneyNumber(value: number) {
     return value.toLocaleString("pt-BR", {
@@ -69,6 +78,10 @@ const ListClients = () => {
     v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     return "R$ " + v;
   }
+
+  // ============================================================================
+  // FORM HANDLING
+  // ============================================================================
 
   function handleMaskedChange(
     field: FormField,
@@ -128,18 +141,9 @@ const ListClients = () => {
     );
   }
 
-  useEffect(() => {
-    if (editingClient) {
-      setValue("name", editingClient.name);
-      setValue("salary", formatMoneyNumber(editingClient.salary));
-      setValue(
-        "companyValuation",
-        formatMoneyNumber(editingClient.companyValuation)
-      );
-    } else {
-      reset();
-    }
-  }, [editingClient, setValue, reset]);
+  // ============================================================================
+  // PAGINAÇÃO
+  // ============================================================================
 
   const totalClients = mockClients.length;
   const totalPages = Math.ceil(totalClients / clientsPerPage);
@@ -154,14 +158,16 @@ const ListClients = () => {
     setCurrentPage(1);
   };
 
-  // Função para fechar e resetar o modal
+  // ============================================================================
+  // MODAL HANDLING
+  // ============================================================================
+
   function handleCloseModal() {
     setModalOpen(false);
     setEditingClient(null);
     reset();
   }
 
-  // Função para abrir modal para editar
   function handleEditClient(client: Client) {
     setEditingClient(client);
     setModalOpen(true);
@@ -182,15 +188,26 @@ const ListClients = () => {
     handleCloseDeleteModal();
   }
 
-  function handleToggleSelectClient(client: Client) {
-    setSelectedClients((prev) => {
-      if (prev.includes(client.id)) {
-        return prev.filter((id) => id !== client.id);
-      } else {
-        return [...prev, client.id];
-      }
-    });
-  }
+  // ============================================================================
+  // EFFECTS
+  // ============================================================================
+
+  useEffect(() => {
+    if (editingClient) {
+      setValue("name", editingClient.name);
+      setValue("salary", formatMoneyNumber(editingClient.salary));
+      setValue(
+        "companyValuation",
+        formatMoneyNumber(editingClient.companyValuation)
+      );
+    } else {
+      reset();
+    }
+  }, [editingClient, setValue, reset]);
+
+  // ============================================================================
+  // RENDER
+  // ============================================================================
 
   return (
     <>
@@ -223,7 +240,7 @@ const ListClients = () => {
                 name={c.name}
                 salary={formatMoneyNumber(c.salary)}
                 company={formatMoneyNumber(c.companyValuation)}
-                onAdd={() => handleToggleSelectClient(c)}
+                onAdd={() => toggleSelectClient(c)}
                 isSelected={selectedClients.includes(c.id)}
                 onEdit={() => handleEditClient(c)}
                 onDelete={() => handleDeleteClient(c)}
