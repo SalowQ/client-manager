@@ -31,7 +31,17 @@ declare module "ui/components" {
     totalPages: number;
     onPageChange: (page: number) => void;
   }>;
-  export const Sidebar: React.FC;
+  export const Sidebar: React.FC<{
+    open: boolean;
+    onClose: () => void;
+    items: Array<{
+      label: string;
+      url?: string;
+      onClick?: () => void;
+      icon?: React.ReactNode;
+    }>;
+    title?: React.ReactNode;
+  }>;
   export const Topbar: React.FC<{
     userName?: string;
     menuItems?: Array<{
@@ -39,5 +49,6 @@ declare module "ui/components" {
       url?: string;
       onClick?: () => void;
     }>;
+    onMenuClick: () => void;
   }>;
 }

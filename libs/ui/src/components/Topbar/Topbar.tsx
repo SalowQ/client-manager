@@ -7,9 +7,14 @@ type MenuItem = {
 export type TopbarProps = {
   userName?: string;
   menuItems?: MenuItem[];
+  onMenuClick?: () => void;
 };
 
-const Topbar = ({ userName = "Usuário", menuItems = [] }: TopbarProps) => (
+const Topbar = ({
+  userName = "Usuário",
+  menuItems = [],
+  onMenuClick,
+}: TopbarProps) => (
   <header className="w-full bg-white shadow px-4 md:px-8 py-2 md:py-3 flex items-center justify-between">
     {/* Botão hamburguer à esquerda */}
     <div className="w-[48px] flex items-center justify-start">
@@ -17,6 +22,7 @@ const Topbar = ({ userName = "Usuário", menuItems = [] }: TopbarProps) => (
         className="p-2 rounded hover:bg-gray-100 focus:outline-none"
         aria-label="Abrir menu"
         type="button"
+        onClick={onMenuClick}
       >
         <svg
           className="w-6 h-6 text-gray-700"
@@ -43,26 +49,28 @@ const Topbar = ({ userName = "Usuário", menuItems = [] }: TopbarProps) => (
 
       {/* Menu dinâmico - escondido em telas pequenas */}
       <nav className="hidden md:flex items-center space-x-6">
-        {menuItems.map((item, idx) => {
-          const isActive = item.url && window.location.pathname === item.url;
-          return (
-            <span
-              key={item.label + idx}
-              className={`font-medium cursor-pointer text-gray-700 hover:text-orange-500 ${
-                isActive ? "text-orange-500 underline" : ""
-              }`}
-              onClick={() => {
-                if (item.onClick) {
-                  item.onClick();
-                } else if (item.url) {
-                  window.location.href = item.url;
-                }
-              }}
-            >
-              {item.label}
-            </span>
-          );
-        })}
+        {menuItems
+          .filter((item) => item.label !== "Home")
+          .map((item, idx) => {
+            const isActive = item.url && window.location.pathname === item.url;
+            return (
+              <span
+                key={item.label + idx}
+                className={`font-medium cursor-pointer text-gray-700 hover:text-orange-500 ${
+                  isActive ? "text-orange-500 underline" : ""
+                }`}
+                onClick={() => {
+                  if (item.onClick) {
+                    item.onClick();
+                  } else if (item.url) {
+                    window.location.href = item.url;
+                  }
+                }}
+              >
+                {item.label}
+              </span>
+            );
+          })}
       </nav>
 
       {/* Saudação */}

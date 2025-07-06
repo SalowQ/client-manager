@@ -1,5 +1,32 @@
 import type { ReactNode } from "react";
-import { Topbar } from "ui/components";
+import { useState } from "react";
+import { Sidebar, Topbar } from "ui/components";
+
+const menuItems = [
+  {
+    label: "Home",
+    url: "/",
+    icon: <span className="material-icons">home</span>,
+  },
+  {
+    label: "Clientes",
+    url: "/clients/list",
+    icon: <span className="material-icons">people</span>,
+  },
+  {
+    label: "Clientes selecionados",
+    url: "/clients/list-selected",
+    icon: <span className="material-icons">group</span>,
+  },
+  {
+    label: "Sair",
+    onClick: () => {
+      localStorage.removeItem("userName");
+      window.location.href = "/auth/login";
+    },
+    icon: <span className="material-icons">logout</span>,
+  },
+];
 
 type ClientsLayoutProps = {
   children: ReactNode;
@@ -7,31 +34,22 @@ type ClientsLayoutProps = {
 
 const ClientsLayout = ({ children }: ClientsLayoutProps) => {
   const userName = localStorage.getItem("userName") || "Usuário";
-  const menuItems = [
-    {
-      label: "Clientes",
-      url: "/clients/list",
-    },
-    {
-      label: "Clientes selecionados",
-      url: "/clients/list-selected",
-    },
-    {
-      label: "Sair",
-      onClick: () => {
-        localStorage.removeItem("userName");
-        window.location.href = "/auth/login";
-      },
-    },
-  ];
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Container centralizado aplicado aqui */}
-      <div className="w-full max-w-8xl mx-auto">
-        <Topbar userName={userName} menuItems={menuItems} />
-        {children}
-      </div>
+      <Topbar
+        userName={userName}
+        menuItems={menuItems}
+        onMenuClick={() => setSidebarOpen(true)}
+      />
+      <Sidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        items={menuItems}
+        title={<img src="/teddy-logo.png" alt="Logo" className="h-7" />}
+      />
+      {children}
     </div>
   );
 };
