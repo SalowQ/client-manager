@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { clientsService } from "../../api/services/clientsService";
+import { clientsService } from "../../api/services/clients-service";
 import type { ApiClient } from "../../api/types";
 import { queryKeys } from "../config";
 

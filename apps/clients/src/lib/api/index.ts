@@ -3,7 +3,7 @@
 // ============================================================================
 
 export { apiClient } from "./client";
-export { clientsService } from "./services/clientsService";
+export { clientsService } from "./services/clients-service";
 export type {
   ApiClient,
   ApiError,
