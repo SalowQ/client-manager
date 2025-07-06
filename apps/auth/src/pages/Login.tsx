@@ -1,64 +1,89 @@
-import { Suspense, useState } from "react";
+import { Suspense, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Button, Input } from "ui/components";
 
+// ============================================================================
+// TIPOS
+// ============================================================================
+
+type LoginFormData = {
+  name: string;
+};
+
+// ============================================================================
+// COMPONENTE PRINCIPAL
+// ============================================================================
+
 const Login = () => {
-  const [formData, setFormData] = useState({
-    name: "",
+  const navigate = useNavigate();
+
+  // ============================================================================
+  // FORM HANDLING
+  // ============================================================================
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+  } = useForm<LoginFormData>({
+    defaultValues: { name: "" },
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  // ============================================================================
+  // VERIFICAÇÃO DE USUÁRIO EXISTENTE
+  // ============================================================================
 
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
+  useEffect(() => {
+    const userName = localStorage.getItem("userName");
+    if (userName) {
+      navigate("/clients/list");
     }
-  };
+  }, [navigate]);
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  // ============================================================================
+  // HANDLERS
+  // ============================================================================
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Por favor, insira seu nome.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-
+  const onSubmit = async (data: LoginFormData) => {
     try {
+      // Simula uma requisição de login
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      localStorage.setItem("userName", formData.name);
-      window.location.href = "/clients/list";
+
+      // Salva o nome do usuário no localStorage
+      localStorage.setItem("userName", data.name);
+
+      // Redireciona para a lista de clientes
+      navigate("/clients/list");
     } catch (error) {
-      setErrors({ submit: "Erro ao fazer login. Tente novamente." });
-    } finally {
-      setIsSubmitting(false);
+      setError("root", {
+        type: "manual",
+        message: "Erro ao fazer login. Tente novamente.",
+      });
     }
   };
+
+  const handleInputChange = () => {
+    // Limpa erros quando o usuário começa a digitar
+    if (errors.name) {
+      clearErrors("name");
+    }
+    if (errors.root) {
+      clearErrors("root");
+    }
+  };
+
+  // ============================================================================
+  // RENDER
+  // ============================================================================
 
   return (
     <div className="h-full bg-gray-50 flex items-center justify-center">
       <Suspense fallback={<div>Carregando UI...</div>}>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="w-4/5 md:w-[35%] rounded-lg flex flex-col items-center justify-center"
           noValidate
         >
@@ -66,25 +91,32 @@ const Login = () => {
             Olá, seja bem-vindo!
           </h1>
 
-          <Input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Digite o seu nome:"
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? errors.name : undefined}
-            className={`text-xl w-full ${
-              errors.name
-                ? "border-red-500 ring-1 ring-red-500"
-                : "border-gray-300"
-            }`}
-            disabled={isSubmitting}
-          />
+          <div className="w-full">
+            <Input
+              type="text"
+              placeholder="Digite o seu nome:"
+              className={`text-xl w-full ${
+                errors.name
+                  ? "border-red-500 ring-1 ring-red-500"
+                  : "border-gray-300"
+              }`}
+              disabled={isSubmitting}
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? errors.name.message : undefined}
+              {...register("name", {
+                required: "Por favor, insira seu nome.",
+                minLength: {
+                  value: 2,
+                  message: "O nome deve ter pelo menos 2 caracteres.",
+                },
+                onChange: handleInputChange,
+              })}
+            />
+          </div>
 
-          {errors.submit && (
-            <p className="text-red-500 text-lg w-full text-center">
-              {errors.submit}
+          {errors.root && (
+            <p className="text-red-500 text-lg w-full text-center mt-2">
+              {errors.root.message}
             </p>
           )}
 

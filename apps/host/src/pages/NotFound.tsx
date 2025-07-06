@@ -19,17 +19,8 @@ const NotFound = () => {
             to="/auth/login"
             className="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200 font-medium"
           >
-            Voltar ao Login
+            Voltar ao início
           </Link>
-
-          <div className="text-sm text-gray-400">
-            <Link
-              to="/clients/list"
-              className="hover:text-orange-500 transition-colors"
-            >
-              Ir para Clientes
-            </Link>
-          </div>
         </div>
       </div>
     </div>
