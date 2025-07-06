@@ -47,12 +47,16 @@ const Sidebar = ({ open, onClose, items, title, onNavigate }: SidebarProps) => {
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-1/5 transform transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-50 h-full w-2/3 md:w-1/5 transform transition-transform transition-opacity duration-300
+          ${
+            open
+              ? "translate-x-0 opacity-100 pointer-events-auto"
+              : "-translate-x-full opacity-0 pointer-events-none"
+          }
+        `}
       >
         {/* Header com logo centralizada */}
-        <div className="h-20 bg-zinc-800 flex items-center justify-center rounded-tr-2xl">
+        <div className="h-20 bg-zinc-800 flex items-center justify-center rounded-tr-2xl relative">
           {title || (
             <img
               src="/logo.svg"
@@ -60,6 +64,17 @@ const Sidebar = ({ open, onClose, items, title, onNavigate }: SidebarProps) => {
               className="h-8 object-contain transform scale-200"
             />
           )}
+          {/* Bolinha com seta */}
+          <button
+            className="absolute right-[-20px] top-15 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border-11 border-black"
+            onClick={onClose}
+            aria-label="Fechar menu"
+            type="button"
+          >
+            <span className="material-icons text-zinc-800 text-2xl">
+              chevron_left
+            </span>
+          </button>
         </div>
 
         {/* Lista de itens */}

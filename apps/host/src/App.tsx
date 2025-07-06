@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Loading from "./components/Loading";
@@ -30,25 +30,11 @@ function AppRoutes() {
 }
 
 function App() {
-  const location = useLocation();
-  const [showSkeleton, setShowSkeleton] = useState(true);
-
-  useEffect(() => {
-    setShowSkeleton(true);
-
-    const timer = setTimeout(() => {
-      setShowSkeleton(false);
-    }, 700);
-
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
-
   return (
     <>
       <Suspense fallback={<Loading />}>
-        {showSkeleton ? <Loading /> : <AppRoutes />}
+        <AppRoutes />
       </Suspense>
-      {/* <ThemeToggleButton /> */}
     </>
   );
 }
