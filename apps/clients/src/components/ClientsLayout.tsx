@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Sidebar, Topbar } from "ui/components";
 
 const menuItems = [
@@ -35,6 +36,11 @@ type ClientsLayoutProps = {
 const ClientsLayout = ({ children }: ClientsLayoutProps) => {
   const userName = localStorage.getItem("userName") || "Usuário";
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigate = (url: string) => {
+    navigate(url);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -42,12 +48,14 @@ const ClientsLayout = ({ children }: ClientsLayoutProps) => {
         userName={userName}
         menuItems={menuItems}
         onMenuClick={() => setSidebarOpen(true)}
+        onNavigate={handleNavigate}
       />
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         items={menuItems}
         title={<img src="/teddy-logo.png" alt="Logo" className="h-7" />}
+        onNavigate={handleNavigate}
       />
       {children}
     </div>

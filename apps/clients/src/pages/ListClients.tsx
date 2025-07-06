@@ -40,7 +40,7 @@ const ListClients = () => {
   return (
     <>
       <div className="flex flex-1">
-        <main className="w-full mt-4 md:mt-6 px-12">
+        <main className="w-full mt-4 md:mt-6 px-18">
           <div className="flex justify-between items-center mb-4">
             <div className="text-lg font-semibold">
               <span className="font-bold">{totalClients}</span> clientes

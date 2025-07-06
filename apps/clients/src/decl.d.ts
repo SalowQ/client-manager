@@ -41,6 +41,7 @@ declare module "ui/components" {
       icon?: React.ReactNode;
     }>;
     title?: React.ReactNode;
+    onNavigate?: (url: string) => void;
   }>;
   export const Topbar: React.FC<{
     userName?: string;
@@ -50,5 +51,6 @@ declare module "ui/components" {
       onClick?: () => void;
     }>;
     onMenuClick: () => void;
+    onNavigate?: (url: string) => void;
   }>;
 }

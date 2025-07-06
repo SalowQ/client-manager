@@ -13,6 +13,7 @@ type SidebarProps = {
   onClose: () => void;
   items: SidebarItem[];
   title?: ReactNode;
+  onNavigate?: (url: string) => void;
 };
 
 const getActive = (url?: string) => {
@@ -20,7 +21,7 @@ const getActive = (url?: string) => {
   return window.location.pathname === url;
 };
 
-const Sidebar = ({ open, onClose, items, title }: SidebarProps) => {
+const Sidebar = ({ open, onClose, items, title, onNavigate }: SidebarProps) => {
   useEffect(() => {
     const linkId = "material-icons-link";
     if (!document.getElementById(linkId)) {
@@ -31,6 +32,7 @@ const Sidebar = ({ open, onClose, items, title }: SidebarProps) => {
       document.head.appendChild(link);
     }
   }, []);
+
   return (
     <>
       {/* Overlay */}
@@ -74,8 +76,13 @@ const Sidebar = ({ open, onClose, items, title }: SidebarProps) => {
                       : "text-black hover:text-orange-400"
                   }`}
                   onClick={() => {
-                    if (item.onClick) item.onClick();
-                    else if (item.url) window.location.href = item.url;
+                    if (item.onClick) {
+                      item.onClick();
+                    } else if (item.url && onNavigate) {
+                      onNavigate(item.url);
+                    } else if (item.url) {
+                      window.location.href = item.url;
+                    }
                     onClose();
                   }}
                 >
