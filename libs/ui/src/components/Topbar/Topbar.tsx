@@ -18,7 +18,7 @@ const Topbar = ({
   onNavigate,
 }: TopbarProps) => {
   return (
-    <header className="w-full bg-white shadow px-4 md:px-8 py-2 md:py-3 flex items-center justify-between">
+    <header className="w-full bg-white shadow px-4 md:px-8 py-4 md:py-6 flex items-center justify-between">
       {/* Botão hamburguer à esquerda */}
       <div className="w-[48px] flex items-center justify-start">
         <button
@@ -47,7 +47,7 @@ const Topbar = ({
       <div className="flex-1 mx-auto max-w-8xl w-full flex items-center justify-between">
         {/* Logo */}
         <div className="min-w-[110px]">
-          <img src="/teddy-logo.png" alt="teddy logo" className="h-7 w-auto" />
+          <img src="/teddy-logo.png" alt="teddy logo" className="h-10 w-auto" />
         </div>
 
         {/* Menu dinâmico - escondido em telas pequenas */}

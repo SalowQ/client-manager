@@ -61,7 +61,7 @@ const Sidebar = ({ open, onClose, items, title, onNavigate }: SidebarProps) => {
             <img
               src="/teddy-logo-branco.png"
               alt="Logo"
-              className="h-8 object-contain transform scale-200"
+              className="h-10 object-contain transform scale-200"
             />
           )}
           {/* Bolinha com seta */}

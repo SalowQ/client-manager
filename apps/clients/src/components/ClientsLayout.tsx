@@ -138,7 +138,9 @@ const ClientsLayout = ({ children }: ClientsLayoutProps) => {
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           items={menuItems}
-          title={<img src="/teddy-logo.png" alt="Logo" className="h-7" />}
+          title={
+            <img src="/teddy-logo-branco.png" alt="Logo" className="h-10" />
+          }
           onNavigate={handleNavigate}
         />
         {children}
