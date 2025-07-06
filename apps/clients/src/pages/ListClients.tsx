@@ -1,3 +1,4 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -8,14 +9,15 @@ import {
   Modal,
   Pagination,
 } from "ui/components";
-import { useSelectedClients, type Client } from "../components/ClientsLayout";
-import type { CreateClientPayload } from "../lib/api/types";
 import {
-  useClients,
-  useCreateClient,
-  useDeleteClient,
-  useUpdateClient,
-} from "../lib/react-query/hooks";
+  createClient,
+  deleteClient,
+  getAllClients,
+  updateClient,
+} from "../api";
+import type { ApiClient, CreateClientPayload } from "../api/types";
+import { useSelectedClients, type Client } from "../components/ClientsLayout";
+import { queryKeys } from "../lib/react-query/config";
 
 // ============================================================================
 // TIPOS
@@ -59,14 +61,54 @@ const ListClients = () => {
   // REACT QUERY HOOKS
   // ============================================================================
 
-  const { data, isLoading, error } = useClients(currentPage, clientsPerPage);
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: [...queryKeys.clients.lists(), currentPage, clientsPerPage],
+    queryFn: () => getAllClients(currentPage, clientsPerPage),
+    staleTime: 2 * 60 * 1000,
+  });
 
   const clients = data?.clients ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  const createClientMutation = useCreateClient();
-  const updateClientMutation = useUpdateClient();
-  const deleteClientMutation = useDeleteClient();
+  const createClientMutation = useMutation({
+    mutationFn: createClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.clients.lists() });
+    },
+    onError: (error) => {
+      console.error("Erro ao criar cliente:", error);
+    },
+  });
+
+  const updateClientMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<ApiClient> }) =>
+      updateClient(id, data),
+    onSuccess: (updatedClient) => {
+      queryClient.setQueryData(
+        queryKeys.clients.detail(updatedClient.id),
+        updatedClient
+      );
+      queryClient.invalidateQueries({ queryKey: queryKeys.clients.lists() });
+    },
+    onError: (error) => {
+      console.error("Erro ao atualizar cliente:", error);
+    },
+  });
+
+  const deleteClientMutation = useMutation({
+    mutationFn: deleteClient,
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries({
+        queryKey: queryKeys.clients.detail(deletedId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.clients.lists() });
+    },
+    onError: (error) => {
+      console.error("Erro ao deletar cliente:", error);
+    },
+  });
 
   const {
     register,
