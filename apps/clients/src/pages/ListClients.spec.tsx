@@ -114,7 +114,7 @@ describe("ListClients", () => {
     expect(screen.getByText(/Carregando clientes.../i)).toBeInTheDocument();
   });
 
-  test("renderiza a tabela com os clientes", async () => {
+  test("renderiza o grid com os clientes", async () => {
     renderWithProviders(<ListClients />);
 
     await waitForElementToBeRemoved(() =>

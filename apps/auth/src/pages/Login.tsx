@@ -3,24 +3,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button, Input } from "ui/components";
 
-// ============================================================================
-// TIPOS
-// ============================================================================
-
 type LoginFormData = {
   name: string;
 };
 
-// ============================================================================
-// COMPONENTE PRINCIPAL
-// ============================================================================
-
 const Login = () => {
   const navigate = useNavigate();
-
-  // ============================================================================
-  // FORM HANDLING
-  // ============================================================================
 
   const {
     register,
@@ -32,10 +20,6 @@ const Login = () => {
     defaultValues: { name: "" },
   });
 
-  // ============================================================================
-  // VERIFICAÇÃO DE USUÁRIO EXISTENTE
-  // ============================================================================
-
   useEffect(() => {
     const userName = localStorage.getItem("userName");
     if (userName) {
@@ -43,19 +27,12 @@ const Login = () => {
     }
   }, [navigate]);
 
-  // ============================================================================
-  // HANDLERS
-  // ============================================================================
-
   const onSubmit = async (data: LoginFormData) => {
     try {
-      // Simula uma requisição de login
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Salva o nome do usuário no localStorage
       localStorage.setItem("userName", data.name);
 
-      // Redireciona para a lista de clientes
       navigate("/clients/list");
     } catch (error) {
       setError("root", {
@@ -66,7 +43,6 @@ const Login = () => {
   };
 
   const handleInputChange = () => {
-    // Limpa erros quando o usuário começa a digitar
     if (errors.name) {
       clearErrors("name");
     }
@@ -74,10 +50,6 @@ const Login = () => {
       clearErrors("root");
     }
   };
-
-  // ============================================================================
-  // RENDER
-  // ============================================================================
 
   return (
     <div className="h-full bg-gray-50 flex items-center justify-center">
