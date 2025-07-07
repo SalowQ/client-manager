@@ -2,10 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Button, CardGrid, ClientCard } from "ui/components";
 import { useSelectedClients, type Client } from "../components/ClientsLayout";
-
-function formatMoneyNumber(value: number) {
-  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
+import { formatMoneyNumber } from "../lib/utils";
 
 const useCachedClients = (): Client[] => {
   const queryClient = useQueryClient();

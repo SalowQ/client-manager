@@ -17,10 +17,7 @@ import {
 } from "../api";
 import type { ApiClient, CreateClientPayload } from "../api/types";
 import { useSelectedClients, type Client } from "../components/ClientsLayout";
-
-// ============================================================================
-// TIPOS
-// ============================================================================
+import { formatMoney, formatMoneyNumber } from "../lib/utils";
 
 type FormField = "name" | "salary" | "companyValuation";
 
@@ -30,21 +27,9 @@ type ClientFormData = {
   companyValuation: string;
 };
 
-// ============================================================================
-// CONSTANTES
-// ============================================================================
-
 const CLIENTS_PER_PAGE_OPTIONS = [8, 16, 32, 64];
 
-// ============================================================================
-// COMPONENTE PRINCIPAL
-// ============================================================================
-
 const ListClients = () => {
-  // ============================================================================
-  // ESTADOS
-  // ============================================================================
-
   const [modalOpen, setModalOpen] = useState(false);
   const [clientsPerPage, setClientsPerPage] = useState(
     CLIENTS_PER_PAGE_OPTIONS[1]
@@ -55,10 +40,6 @@ const ListClients = () => {
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
 
   const { selectedClients, toggleSelectClient } = useSelectedClients();
-
-  // ============================================================================
-  // REACT QUERY HOOKS
-  // ============================================================================
 
   const queryClient = useQueryClient();
 
@@ -96,31 +77,6 @@ const ListClients = () => {
   } = useForm<ClientFormData>({
     defaultValues: { name: "", salary: "", companyValuation: "" },
   });
-
-  // ============================================================================
-  // UTILITÁRIOS
-  // ============================================================================
-
-  function formatMoneyNumber(value: number) {
-    return value.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  }
-
-  function formatMoney(value: string) {
-    let v = value.replace(/\D/g, "");
-    const num = Number(v);
-    if (!v || num === 0) return "";
-    v = (num / 100).toFixed(2) + "";
-    v = v.replace(".", ",");
-    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    return "R$ " + v;
-  }
-
-  // ============================================================================
-  // FORM HANDLING
-  // ============================================================================
 
   function handleMaskedChange(
     field: FormField,
@@ -175,10 +131,6 @@ const ListClients = () => {
     );
   }
 
-  // ============================================================================
-  // PAGINAÇÃO
-  // ============================================================================
-
   const totalClients = clients.length;
 
   const handleClientsPerPageChange = (
@@ -187,10 +139,6 @@ const ListClients = () => {
     setClientsPerPage(Number(e.target.value));
     setCurrentPage(1);
   };
-
-  // ============================================================================
-  // MODAL HANDLING
-  // ============================================================================
 
   function handleCloseModal() {
     setModalOpen(false);
@@ -221,10 +169,6 @@ const ListClients = () => {
     }
   }
 
-  // ============================================================================
-  // EFFECTS
-  // ============================================================================
-
   useEffect(() => {
     if (editingClient) {
       setValue("name", editingClient.name);
@@ -237,10 +181,6 @@ const ListClients = () => {
       reset();
     }
   }, [editingClient, setValue, reset]);
-
-  // ============================================================================
-  // RENDER
-  // ============================================================================
 
   if (isLoading) {
     return (
