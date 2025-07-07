@@ -1,21 +1,31 @@
+import { NativeFederationTestsHost } from "@module-federation/native-federation-tests/vite";
+import { NativeFederationTypeScriptHost } from "@module-federation/native-federation-typescript/vite";
 import federation from "@originjs/vite-plugin-federation";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+const moduleFederationConfig = {
+  name: "ui",
+  filename: "remoteEntry.js",
+  exposes: {
+    "./UiApp": "./src/App.tsx",
+    "./components": "./src/index.ts",
+  },
+  shared: ["react", "react-dom"],
+};
+
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react(),
-    federation({
-      name: "ui",
-      filename: "remoteEntry.js",
-      exposes: {
-        "./UiApp": "./src/App.tsx",
-        "./components": "./src/index.ts",
-      },
-      shared: ["react", "react-dom"],
+    NativeFederationTestsHost({
+      moduleFederationConfig,
     }),
+    NativeFederationTypeScriptHost({
+      moduleFederationConfig,
+    }),
+    react(),
+    federation(moduleFederationConfig),
     {
       name: "vite-plugin-notify-host-on-rebuild",
       apply(config, { command }) {

@@ -1,30 +1,40 @@
 // apps/clientes/vite.config.ts
+import { NativeFederationTestsHost } from "@module-federation/native-federation-tests/vite";
+import { NativeFederationTypeScriptHost } from "@module-federation/native-federation-typescript/vite";
 import federation from "@originjs/vite-plugin-federation";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type UserConfig } from "vite";
 import type { InlineConfig } from "vitest/node";
 
+const moduleFederationConfig = {
+  name: "clients",
+  filename: "remoteEntry.js",
+  exposes: {
+    "./ClientsApp": "./src/App.tsx",
+  },
+  remotes: {
+    ui: "http://localhost:3003/assets/remoteEntry.js",
+  },
+  shared: ["react", "react-dom", "react-router-dom"],
+  test: {
+    globals: true,
+  },
+} as UserConfig & {
+  test: InlineConfig;
+};
+
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react(),
-    federation({
-      name: "clients",
-      filename: "remoteEntry.js",
-      exposes: {
-        "./ClientsApp": "./src/App.tsx",
-      },
-      remotes: {
-        ui: "http://localhost:3003/assets/remoteEntry.js",
-      },
-      shared: ["react", "react-dom", "react-router-dom"],
-      test: {
-        globals: true,
-      },
-    } as UserConfig & {
-      test: InlineConfig;
+    NativeFederationTestsHost({
+      moduleFederationConfig,
     }),
+    NativeFederationTypeScriptHost({
+      moduleFederationConfig,
+    }),
+    react(),
+    federation(moduleFederationConfig),
     {
       name: "vite-plugin-notify-host-on-rebuild",
       apply(config, { command }) {
