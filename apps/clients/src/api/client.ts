@@ -48,51 +48,7 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     const status = error.response?.status;
-    const message = error.response?.data?.message || error.message;
-
-    switch (status) {
-      case 400:
-        showErrorToast(`Erro de validação: ${message}`);
-        break;
-      case 401:
-        showErrorToast("Sessão expirada. Faça login novamente.");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("token");
-        window.location.href = "/auth/login";
-        break;
-      case 403:
-        showErrorToast("Acesso negado. Você não tem permissão para esta ação.");
-        break;
-      case 404:
-        showErrorToast("Recurso não encontrado.");
-        break;
-      case 409:
-        showErrorToast("Conflito: o recurso já existe ou está em uso.");
-        break;
-      case 422:
-        showErrorToast(`Erro de validação: ${message}`);
-        break;
-      case 500:
-        showErrorToast("Erro interno do servidor. Tente novamente mais tarde.");
-        break;
-      case 502:
-      case 503:
-      case 504:
-        showErrorToast(
-          "Serviço temporariamente indisponível. Tente novamente."
-        );
-        break;
-      default:
-        if (error.code === "ECONNABORTED") {
-          showErrorToast("Tempo limite excedido. Verifique sua conexão.");
-        } else if (error.code === "NETWORK_ERROR") {
-          showErrorToast("Erro de conexão. Verifique sua internet.");
-        } else {
-          showErrorToast(`Erro inesperado: ${message}`);
-        }
-        break;
-    }
-
+    showErrorToast(`Erro código ${status}`);
     return Promise.reject(error);
   }
 );
