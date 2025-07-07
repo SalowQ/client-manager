@@ -4,7 +4,6 @@ export const handlers = [
   http.get("https://boasorte.teddybackoffice.com.br/users", ({ request }) => {
     const url = new URL(request.url);
     const page = url.searchParams.get("page") || "1";
-    const limit = url.searchParams.get("limit") || "16";
 
     return HttpResponse.json({
       clients: [
