@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
-import path from "path";
+import { crossOrigin } from "happy-dom/lib/PropertySymbol.js";
+import path, { resolve } from "path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -22,13 +23,20 @@ export default defineConfig({
     },
   ],
   resolve: {
-    alias: {
-      "@/": new URL("./src/", import.meta.url).pathname,
-    },
+    alias: [{ find: "@", replacement: resolve(__dirname, "./src") }],
   },
   test: {
     globals: true,
     environment: "happy-dom",
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          fetch: {
+            disableSameOriginPolicy: true,
+          },
+        },
+      },
+    },
     setupFiles: ["./test/setup.ts"],
   },
 });
