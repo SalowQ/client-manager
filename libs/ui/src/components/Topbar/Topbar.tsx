@@ -22,6 +22,7 @@ const Topbar = ({
       {/* Botão hamburguer à esquerda */}
       <div className="w-[48px] flex items-center justify-start">
         <button
+          data-testid="menu-button"
           className="p-2 rounded hover:bg-gray-100 focus:outline-none"
           aria-label="Abrir menu"
           type="button"

@@ -19,7 +19,10 @@ const ClientCard = ({
   onDelete,
   isSelected = false,
 }: ClientCardProps) => (
-  <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[200px] w-full mx-auto">
+  <div
+    data-testid="client-card"
+    className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[200px] w-full mx-auto"
+  >
     <div className="font-bold text-lg text-center mb-2">{name}</div>
     <div className="text-sm text-gray-800 text-center">Salário: {salary}</div>
     <div className="text-sm text-gray-800 text-center mb-4">
