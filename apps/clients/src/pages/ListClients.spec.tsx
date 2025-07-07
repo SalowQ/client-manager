@@ -4,7 +4,7 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import * as api from "../api";
 import ListClients from "./ListClients";
 
@@ -193,8 +193,17 @@ describe("ListClients", () => {
 
   test("chama a API getAllClients com os parâmetros corretos", async () => {
     const getAllClientsSpy = vi.spyOn(api, "getAllClients");
+    const queryClient = createTestQueryClient();
 
-    renderWithProviders(<ListClients />);
+    const wrapper = render(<ListClients />, {
+      wrapper: ({ children }) => (
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>{children}</MemoryRouter>
+        </QueryClientProvider>
+      ),
+    });
+
+    console.log(wrapper.baseElement.innerHTML);
 
     await waitForElementToBeRemoved(() =>
       screen.getByText(/Carregando clientes.../i)
