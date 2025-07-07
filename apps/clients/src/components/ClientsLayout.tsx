@@ -4,10 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Sidebar, Toast, Topbar } from "ui/components";
 import { ReactQueryProvider } from "../lib/react-query/provider";
 
-// ============================================================================
-// TIPOS
-// ============================================================================
-
 export type Client = {
   id: number;
   name: string;
@@ -22,10 +18,6 @@ type SelectedClientsContextType = {
   toggleSelectClient: (client: Client) => void;
   clearSelectedClients: () => void;
 };
-
-// ============================================================================
-// CONTEXT E PROVIDER
-// ============================================================================
 
 const SelectedClientsContext = createContext<
   SelectedClientsContextType | undefined
@@ -66,10 +58,6 @@ export function useSelectedClients() {
   return ctx;
 }
 
-// ============================================================================
-// MENU ITEMS
-// ============================================================================
-
 const menuItems = [
   {
     label: "Home",
@@ -95,10 +83,6 @@ const menuItems = [
     icon: <span className="material-icons">logout</span>,
   },
 ];
-
-// ============================================================================
-// COMPONENTE PRINCIPAL
-// ============================================================================
 
 type ClientsLayoutProps = {
   children: ReactNode;
