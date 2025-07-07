@@ -17,7 +17,13 @@ describe("seleção de clientes e navegação", () => {
       .find('button[aria-label="Adicionar"]')
       .click();
 
-    cy.contains("Clientes selecionados").click();
+    cy.get('[data-testid="menu-button"]').click();
+
+    cy.get("aside").should("be.visible");
+
+    cy.get("li").contains("Clientes selecionados").click();
+
+    cy.get("aside").should("not.be.visible");
 
     cy.url().should("include", "/clients/list-selected");
     cy.get('[data-testid="client-card"]').should("have.length", 2);
