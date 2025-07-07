@@ -1,5 +1,3 @@
-import { NativeFederationTestsHost } from "@module-federation/native-federation-tests/vite";
-import { NativeFederationTypeScriptHost } from "@module-federation/native-federation-typescript/vite";
 import federation from "@originjs/vite-plugin-federation";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -18,12 +16,6 @@ const moduleFederationConfig = {
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    NativeFederationTestsHost({
-      moduleFederationConfig,
-    }),
-    NativeFederationTypeScriptHost({
-      moduleFederationConfig,
-    }),
     react(),
     federation(moduleFederationConfig),
     {
