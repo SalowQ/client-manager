@@ -21,15 +21,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "happy-dom",
-    environmentOptions: {
-      happyDOM: {
-        settings: {
-          fetch: {
-            disableSameOriginPolicy: true,
-          },
-        },
-      },
-    },
     setupFiles: ["./test/setup.ts"],
   },
 });

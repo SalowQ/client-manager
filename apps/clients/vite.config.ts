@@ -1,4 +1,3 @@
-// apps/clientes/vite.config.ts
 import { NativeFederationTestsHost } from "@module-federation/native-federation-tests/vite";
 import { NativeFederationTypeScriptHost } from "@module-federation/native-federation-typescript/vite";
 import federation from "@originjs/vite-plugin-federation";
