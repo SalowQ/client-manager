@@ -17,7 +17,6 @@ import {
 } from "../api";
 import type { ApiClient, CreateClientPayload } from "../api/types";
 import { useSelectedClients, type Client } from "../components/ClientsLayout";
-import { queryKeys } from "../lib/react-query/config";
 
 // ============================================================================
 // TIPOS
@@ -64,9 +63,8 @@ const ListClients = () => {
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: [...queryKeys.clients.lists(), currentPage, clientsPerPage],
+    queryKey: ["clients", currentPage, clientsPerPage],
     queryFn: () => getAllClients(currentPage, clientsPerPage),
-    staleTime: 2 * 60 * 1000,
   });
 
   const clients = data?.clients ?? [];
@@ -74,40 +72,18 @@ const ListClients = () => {
 
   const createClientMutation = useMutation({
     mutationFn: createClient,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.clients.lists() });
-    },
-    onError: (error) => {
-      console.error("Erro ao criar cliente:", error);
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
   });
 
   const updateClientMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<ApiClient> }) =>
       updateClient(id, data),
-    onSuccess: (updatedClient) => {
-      queryClient.setQueryData(
-        queryKeys.clients.detail(updatedClient.id),
-        updatedClient
-      );
-      queryClient.invalidateQueries({ queryKey: queryKeys.clients.lists() });
-    },
-    onError: (error) => {
-      console.error("Erro ao atualizar cliente:", error);
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
   });
 
   const deleteClientMutation = useMutation({
     mutationFn: deleteClient,
-    onSuccess: (_, deletedId) => {
-      queryClient.removeQueries({
-        queryKey: queryKeys.clients.detail(deletedId),
-      });
-      queryClient.invalidateQueries({ queryKey: queryKeys.clients.lists() });
-    },
-    onError: (error) => {
-      console.error("Erro ao deletar cliente:", error);
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
   });
 
   const {
@@ -240,9 +216,7 @@ const ListClients = () => {
   function handleConfirmDelete() {
     if (deletingClient) {
       deleteClientMutation.mutate(deletingClient.id, {
-        onSuccess: () => {
-          handleCloseDeleteModal();
-        },
+        onSuccess: handleCloseDeleteModal,
       });
     }
   }
@@ -357,17 +331,11 @@ const ListClients = () => {
                   id: editingClient.id,
                   data: createPayload,
                 },
-                {
-                  onSuccess: () => {
-                    handleCloseModal();
-                  },
-                }
+                { onSuccess: handleCloseModal }
               );
             } else {
               createClientMutation.mutate(createPayload, {
-                onSuccess: () => {
-                  handleCloseModal();
-                },
+                onSuccess: handleCloseModal,
               });
             }
           })}

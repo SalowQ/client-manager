@@ -1,13 +1,9 @@
-// ============================================================================
-// EXPORTAÇÕES DA API
-// ============================================================================
-
 export { apiClient } from "./client";
-export { createClient } from "./services/create-client";
-export { deleteClient } from "./services/delete-client";
-export { getAllClients } from "./services/get-all-clients";
-export { getClientById } from "./services/get-client-by-id";
-export { updateClient } from "./services/update-client";
+export { createClient } from "./endpoints/create-client";
+export { deleteClient } from "./endpoints/delete-client";
+export { getAllClients } from "./endpoints/get-all-clients";
+export { getClientById } from "./endpoints/get-client-by-id";
+export { updateClient } from "./endpoints/update-client";
 export type {
   ApiClient,
   ApiError,

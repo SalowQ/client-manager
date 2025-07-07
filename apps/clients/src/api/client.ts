@@ -1,23 +1,15 @@
 import axios from "axios";
 import { showErrorToast, showSuccessToast } from "ui/components";
 
-// ============================================================================
-// CONFIGURAÇÃO DO CLIENTE AXIOS
-// ============================================================================
-
 const API_BASE_URL = "https://boasorte.teddybackoffice.com.br";
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // 10 segundos
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
 });
-
-// ============================================================================
-// INTERCEPTORS
-// ============================================================================
 
 apiClient.interceptors.response.use(
   (response) => {
