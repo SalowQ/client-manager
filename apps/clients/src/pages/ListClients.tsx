@@ -51,20 +51,40 @@ const ListClients = () => {
   const clients = data?.clients ?? [];
   const totalPages = data?.totalPages ?? 1;
 
+  function handleCloseModal() {
+    setModalOpen(false);
+    setEditingClient(null);
+    reset();
+  }
+
+  function handleCloseDeleteModal() {
+    setDeleteModalOpen(false);
+    setDeletingClient(null);
+  }
+
   const createClientMutation = useMutation({
     mutationFn: createClient,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      handleCloseModal();
+    },
   });
 
   const updateClientMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<ApiClient> }) =>
       updateClient(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      handleCloseModal();
+    },
   });
 
   const deleteClientMutation = useMutation({
     mutationFn: deleteClient,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      handleCloseDeleteModal();
+    },
   });
 
   const {
@@ -140,12 +160,6 @@ const ListClients = () => {
     setCurrentPage(1);
   };
 
-  function handleCloseModal() {
-    setModalOpen(false);
-    setEditingClient(null);
-    reset();
-  }
-
   function handleEditClient(client: Client) {
     setEditingClient(client);
     setModalOpen(true);
@@ -156,17 +170,9 @@ const ListClients = () => {
     setDeleteModalOpen(true);
   }
 
-  function handleCloseDeleteModal() {
-    setDeleteModalOpen(false);
-    setDeletingClient(null);
-  }
-
   function handleConfirmDelete() {
     if (deletingClient) {
-      deleteClientMutation.mutate(deletingClient.id, {
-        onSuccess: handleCloseDeleteModal,
-      });
-      handleCloseDeleteModal();
+      deleteClientMutation.mutate(deletingClient.id);
     }
   }
 
@@ -178,7 +184,6 @@ const ListClients = () => {
         "companyValuation",
         formatMoneyNumber(editingClient.companyValuation)
       );
-      handleCloseDeleteModal();
     } else {
       reset();
     }
@@ -268,17 +273,12 @@ const ListClients = () => {
             };
 
             if (editingClient) {
-              updateClientMutation.mutate(
-                {
-                  id: editingClient.id,
-                  data: createPayload,
-                },
-                { onSuccess: handleCloseModal }
-              );
-            } else {
-              createClientMutation.mutate(createPayload, {
-                onSuccess: handleCloseModal,
+              updateClientMutation.mutate({
+                id: editingClient.id,
+                data: createPayload,
               });
+            } else {
+              createClientMutation.mutate(createPayload);
             }
           })}
         >
