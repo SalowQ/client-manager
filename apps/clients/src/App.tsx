@@ -11,7 +11,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ClientsLayout>
         <Routes>
-          <Route path="/" element={<ListClients />} />
+          {/* <Route path="/" element={<ListClients />} /> */}
           <Route path="list" element={<ListClients />} />
           <Route path="list-selected" element={<ListSelectedClients />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
