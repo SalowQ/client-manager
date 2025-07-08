@@ -1,0 +1,20 @@
+{
+  "buildCommand": "npm run install:all && npm run build",
+  "outputDirectory": "apps/clients/dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/auth/(.*)",
+      "destination": "/apps/auth/$1"
+    },
+    {
+      "source": "/clients/(.*)",
+      "destination": "/apps/clients/$1"
+    },
+    {
+      "source": "/host/(.*)",
+      "destination": "/apps/host/$1"
+    }
+  ]
+}

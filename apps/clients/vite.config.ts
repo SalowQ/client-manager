@@ -56,7 +56,7 @@ export default defineConfig({
   build: {
     modulePreload: false,
     target: "esnext",
-    minify: false,
+    minify: process.env.NODE_ENV === "production",
     cssCodeSplit: false,
   },
 });

@@ -3,6 +3,12 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+declare const process: {
+  env: {
+    NODE_ENV?: string;
+  };
+};
+
 const moduleFederationConfig = {
   name: "ui",
   filename: "remoteEntry.js",
@@ -40,7 +46,13 @@ export default defineConfig({
   build: {
     modulePreload: false,
     target: "esnext",
-    minify: false,
+    minify: process.env.NODE_ENV === "production",
     cssCodeSplit: false,
+    lib: {
+      entry: "./src/index.ts",
+      name: "ui",
+      formats: ["es"],
+      fileName: () => "ui.js",
+    },
   },
 });
