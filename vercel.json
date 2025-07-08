@@ -5,20 +5,28 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/auth",
+      "destination": "/auth/"
+    },
+    {
       "source": "/auth/(.*)",
-      "destination": "/apps/auth/dist/$1"
+      "destination": "/auth/$1"
+    },
+    {
+      "source": "/clients",
+      "destination": "/clients/"
     },
     {
       "source": "/clients/(.*)",
-      "destination": "/apps/clients/dist/$1"
+      "destination": "/clients/$1"
     },
     {
       "source": "/ui/(.*)",
-      "destination": "/libs/ui/dist/$1"
+      "destination": "/ui/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/apps/host/dist/$1"
+      "destination": "/$1"
     }
   ]
 }

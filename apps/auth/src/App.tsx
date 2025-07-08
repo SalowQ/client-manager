@@ -8,7 +8,7 @@ function App() {
     <>
       <UiApp />
       <Routes>
-        <Route path="/" element={<Navigate to="/auth/login" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
