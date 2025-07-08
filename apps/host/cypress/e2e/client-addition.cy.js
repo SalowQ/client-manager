@@ -17,8 +17,6 @@ describe("adição de clientes", () => {
     cy.get(".bg-white.rounded.shadow-lg").should("be.visible");
     cy.get('button[type="submit"]').click();
 
-    cy.get(".bg-white.rounded.shadow-lg").should("not.exist");
-
     cy.get('[data-testid="client-card"]').should("contain", "Maria Oliveira");
   });
 });

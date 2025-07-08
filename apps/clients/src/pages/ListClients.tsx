@@ -64,8 +64,8 @@ const ListClients = () => {
 
   const createClientMutation = useMutation({
     mutationFn: createClient,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"], exact: false });
       handleCloseModal();
     },
   });
@@ -73,16 +73,16 @@ const ListClients = () => {
   const updateClientMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<ApiClient> }) =>
       updateClient(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"], exact: false });
       handleCloseModal();
     },
   });
 
   const deleteClientMutation = useMutation({
     mutationFn: deleteClient,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"], exact: false });
       handleCloseDeleteModal();
     },
   });
@@ -314,26 +314,29 @@ const ListClients = () => {
           </Button>
         </form>
       </Modal>
-      <Modal
-        open={deleteModalOpen}
-        title="Excluir cliente:"
-        onClose={handleCloseDeleteModal}
-      >
-        <div className="p-4">
-          <p>
-            Você está prestes a excluir o cliente: <b>{deletingClient?.name}</b>
-          </p>
-          <Button
-            className="bg-orange-500 text-white rounded px-4 py-2 mt-4 w-full hover:bg-orange-600"
-            onClick={handleConfirmDelete}
-            disabled={deleteClientMutation.isPending}
-          >
-            {deleteClientMutation.isPending
-              ? "Excluindo..."
-              : "Excluir cliente"}
-          </Button>
-        </div>
-      </Modal>
+      {deletingClient && (
+        <Modal
+          open={deleteModalOpen}
+          title="Excluir cliente:"
+          onClose={handleCloseDeleteModal}
+        >
+          <div className="p-4">
+            <p>
+              Você está prestes a excluir o cliente:{" "}
+              <b>{deletingClient.name}</b>
+            </p>
+            <Button
+              className="bg-orange-500 text-white rounded px-4 py-2 mt-4 w-full hover:bg-orange-600"
+              onClick={handleConfirmDelete}
+              disabled={deleteClientMutation.isPending}
+            >
+              {deleteClientMutation.isPending
+                ? "Excluindo..."
+                : "Excluir cliente"}
+            </Button>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

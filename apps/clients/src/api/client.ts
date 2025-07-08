@@ -1,5 +1,4 @@
 import axios from "axios";
-import { showErrorToast, showSuccessToast } from "ui/components";
 
 const API_BASE_URL = "https://boasorte.teddybackoffice.com.br";
 
@@ -15,7 +14,6 @@ apiClient.interceptors.response.use(
   (response) => {
     const method = response.config.method?.toLowerCase();
     const url = response.config.url || "";
-
     if (
       method === "post" ||
       method === "put" ||
@@ -40,15 +38,12 @@ apiClient.interceptors.response.use(
       if (url.includes("/users")) {
         message = message.replace("Item", "Cliente");
       }
-
-      showSuccessToast(message);
     }
 
     return response;
   },
   (error) => {
-    const status = error.response?.status;
-    showErrorToast(`Erro código ${status}`);
+    // const status = error.response?.status;
     return Promise.reject(error);
   }
 );

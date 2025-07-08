@@ -6,15 +6,4 @@ export { default as Modal } from "./components/Modal/Modal";
 export { default as Pagination } from "./components/Pagination/Pagination";
 export { default as Sidebar } from "./components/Sidebar/Sidebar";
 export { default as ThemeToggleButton } from "./components/ThemeToggleButton/ThemeToggleButton";
-export {
-  showErrorToast,
-  showInfoToast,
-  showSuccessToast,
-  showToast,
-  showWarningToast,
-  default as Toast,
-  type ToastContainerProps,
-  type ToastProps,
-  type ToastType,
-} from "./components/Toast/Toast";
 export { default as Topbar } from "./components/Topbar/Topbar";

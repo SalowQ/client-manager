@@ -7,6 +7,5 @@ export { default as Modal } from "./components/Modal/Modal";
 export { default as Pagination } from "./components/Pagination/Pagination";
 export { default as Sidebar } from "./components/Sidebar/Sidebar";
 export { default as ThemeToggleButton } from "./components/ThemeToggleButton/ThemeToggleButton";
-export { default as Toast } from "./components/Toast/Toast";
 export { default as Tooltip } from "./components/Tooltip/Tooltip";
 export { default as Topbar } from "./components/Topbar/Topbar";

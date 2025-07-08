@@ -5,7 +5,6 @@ declare module "ui/UiApp" {
 
 declare module "ui/components" {
   import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
-  import { ToastOptions } from "react-toastify";
 
   export const Button: React.FC<
     ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -58,51 +57,4 @@ declare module "ui/components" {
     onMenuClick: () => void;
     onNavigate?: (url: string) => void;
   }>;
-
-  // Toast Types
-  export type ToastType = "success" | "error" | "warning" | "info";
-
-  export interface ToastProps {
-    type: ToastType;
-    message: string;
-    options?: ToastOptions;
-  }
-
-  export interface ToastContainerProps {
-    position?:
-      | "top-right"
-      | "top-center"
-      | "top-left"
-      | "bottom-right"
-      | "bottom-center"
-      | "bottom-left";
-    autoClose?: number;
-    hideProgressBar?: boolean;
-    newestOnTop?: boolean;
-    closeOnClick?: boolean;
-    rtl?: boolean;
-    pauseOnFocusLoss?: boolean;
-    draggable?: boolean;
-    pauseOnHover?: boolean;
-    theme?: "light" | "dark" | "colored";
-  }
-
-  // Toast Component
-  export const Toast: React.FC<ToastContainerProps>;
-
-  // Toast Functions
-  export const showToast: (props: ToastProps) => void;
-  export const showSuccessToast: (
-    message: string,
-    options?: ToastOptions
-  ) => void;
-  export const showErrorToast: (
-    message: string,
-    options?: ToastOptions
-  ) => void;
-  export const showWarningToast: (
-    message: string,
-    options?: ToastOptions
-  ) => void;
-  export const showInfoToast: (message: string, options?: ToastOptions) => void;
 }
