@@ -17,9 +17,18 @@ export default defineConfig({
     federation({
       name: "host",
       remotes: {
-        auth: "http://localhost:3001/assets/remoteEntry.js",
-        clients: "http://localhost:3002/assets/remoteEntry.js",
-        ui: "http://localhost:3003/assets/remoteEntry.js",
+        auth:
+          process.env.NODE_ENV === "production"
+            ? "https://client-manager-eosin.vercel.app/auth/assets/remoteEntry.js"
+            : "http://localhost:3001/assets/remoteEntry.js",
+        clients:
+          process.env.NODE_ENV === "production"
+            ? "https://client-manager-eosin.vercel.app/clients/assets/remoteEntry.js"
+            : "http://localhost:3002/assets/remoteEntry.js",
+        ui:
+          process.env.NODE_ENV === "production"
+            ? "https://client-manager-eosin.vercel.app/ui/assets/remoteEntry.js"
+            : "http://localhost:3003/assets/remoteEntry.js",
       },
       shared: ["react", "react-dom", "react-router-dom"],
     }),

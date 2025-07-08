@@ -1,20 +1,24 @@
 {
-  "buildCommand": "npm run install:all && npm run build",
+  "buildCommand": "npm run install:all && chmod +x build.sh && ./build.sh",
   "outputDirectory": "apps/host/dist",
   "installCommand": "npm install",
   "framework": "vite",
   "rewrites": [
     {
       "source": "/auth/(.*)",
-      "destination": "/apps/auth/$1"
+      "destination": "/apps/auth/dist/$1"
     },
     {
       "source": "/clients/(.*)",
-      "destination": "/apps/clients/$1"
+      "destination": "/apps/clients/dist/$1"
     },
     {
-      "source": "/host/(.*)",
-      "destination": "/apps/host/$1"
+      "source": "/ui/(.*)",
+      "destination": "/libs/ui/dist/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/apps/host/dist/$1"
     }
   ]
 }
