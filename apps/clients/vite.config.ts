@@ -34,21 +34,6 @@ export default defineConfig({
     }),
     react(),
     federation(moduleFederationConfig),
-    {
-      name: "vite-plugin-notify-host-on-rebuild",
-      apply(config, { command }) {
-        return Boolean(command === "build" && config.build?.watch);
-      },
-      async buildEnd(error) {
-        if (!error) {
-          try {
-            await fetch("http://localhost:3000/__fullReload");
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      },
-    },
   ],
   server: {
     port: 3002,

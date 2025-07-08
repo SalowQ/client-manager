@@ -6,6 +6,12 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, type UserConfig } from "vite";
 import type { InlineConfig } from "vitest/node";
 
+declare const process: {
+  env: {
+    NODE_ENV?: string;
+  };
+};
+
 const moduleFederationConfig = {
   name: "auth",
   filename: "remoteEntry.js",
@@ -34,21 +40,6 @@ export default defineConfig({
     }),
     react(),
     federation(moduleFederationConfig),
-    {
-      name: "vite-plugin-notify-host-on-rebuild",
-      apply(config, { command }) {
-        return Boolean(command === "build" && config.build?.watch);
-      },
-      async buildEnd(error) {
-        if (!error) {
-          try {
-            await fetch("http://localhost:3000/__fullReload");
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      },
-    },
   ],
   server: {
     port: 3001,
@@ -56,7 +47,7 @@ export default defineConfig({
   build: {
     modulePreload: false,
     target: "esnext",
-    minify: false,
+    minify: process.env.NODE_ENV === "production",
     cssCodeSplit: false,
   },
 });
