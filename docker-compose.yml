@@ -1,0 +1,40 @@
+services:
+  host:
+    build:
+      context: ./apps/host
+    container_name: host
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+
+  auth:
+    build:
+      context: ./apps/auth
+    container_name: auth
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+
+  clients:
+    build:
+      context: ./apps/clients
+    container_name: clients
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ./libs/ui
+    container_name: ui
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
