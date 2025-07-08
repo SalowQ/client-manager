@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = "https://boasorte.teddybackoffice.com.br";
 
@@ -38,12 +39,13 @@ apiClient.interceptors.response.use(
       if (url.includes("/users")) {
         message = message.replace("Item", "Cliente");
       }
+      toast.success(message, { theme: "colored" });
     }
 
     return response;
   },
   (error) => {
-    // const status = error.response?.status;
+    toast.error("Erro ao realizar a operação.", { theme: "colored" });
     return Promise.reject(error);
   }
 );

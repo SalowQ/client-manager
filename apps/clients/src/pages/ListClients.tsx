@@ -18,6 +18,7 @@ import {
 import type { ApiClient, CreateClientPayload } from "../api/types";
 import { useSelectedClients, type Client } from "../components/ClientsLayout";
 import { formatMoney, formatMoneyNumber } from "../lib/utils";
+import { ToastContainer, toast } from "react-toastify";
 
 type FormField = "name" | "salary" | "companyValuation";
 
@@ -337,6 +338,7 @@ const ListClients = () => {
           </div>
         </Modal>
       )}
+      <ToastContainer />
     </>
   );
 };
