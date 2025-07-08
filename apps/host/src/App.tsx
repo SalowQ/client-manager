@@ -25,6 +25,7 @@ function AppRoutes() {
       <Route path="/clients/*" element={<ClientsApp />} />
       <Route path="/404" element={<NotFound />} />
       <Route path="/" element={<Navigate to="/auth" replace />} />
+      <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
   );
 }
