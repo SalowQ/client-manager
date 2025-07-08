@@ -19,15 +19,15 @@ export default defineConfig({
       remotes: {
         auth:
           process.env.NODE_ENV === "production"
-            ? "https://client-manager-eosin.vercel.app/auth/assets/remoteEntry.js"
+            ? "https://auth-client-manager.vercel.app/assets/remoteEntry.js"
             : "http://localhost:3001/assets/remoteEntry.js",
         clients:
           process.env.NODE_ENV === "production"
-            ? "https://client-manager-eosin.vercel.app/clients/assets/remoteEntry.js"
+            ? "https://clients-client-manager.vercel.app/assets/remoteEntry.js"
             : "http://localhost:3002/assets/remoteEntry.js",
         ui:
           process.env.NODE_ENV === "production"
-            ? "https://client-manager-eosin.vercel.app/ui/assets/remoteEntry.js"
+            ? "https://ui-client-manager.vercel.app/assets/remoteEntry.js"
             : "http://localhost:3003/assets/remoteEntry.js",
       },
       shared: ["react", "react-dom", "react-router-dom"],
