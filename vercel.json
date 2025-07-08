@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run install:all && npm run build",
-  "outputDirectory": "apps/clients/dist",
+  "outputDirectory": "apps/host/dist",
   "installCommand": "npm install",
   "framework": "vite",
   "rewrites": [
