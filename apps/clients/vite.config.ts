@@ -13,7 +13,10 @@ const moduleFederationConfig = {
     "./ClientsApp": "./src/App.tsx",
   },
   remotes: {
-    ui: "http://localhost:3003/assets/remoteEntry.js",
+    ui:
+      process.env.NODE_ENV === "production"
+        ? "https://ui-client-manager.vercel.app/assets/remoteEntry.js"
+        : "http://localhost:3003/assets/remoteEntry.js",
   },
   shared: ["react", "react-dom", "react-router-dom"],
   test: {
