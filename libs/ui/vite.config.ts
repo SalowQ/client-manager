@@ -13,8 +13,7 @@ const moduleFederationConfig = {
   name: "ui",
   filename: "remoteEntry.js",
   exposes: {
-    "./UiApp": "./src/App.tsx",
-    "./components": "./src/index.ts",
+    "./components": "./src/test.ts",
   },
   shared: ["react", "react-dom"],
 };
@@ -29,11 +28,5 @@ export default defineConfig({
     target: "esnext",
     minify: process.env.NODE_ENV === "production",
     cssCodeSplit: false,
-    lib: {
-      entry: "./src/index.ts",
-      name: "ui",
-      formats: ["es"],
-      fileName: () => "ui.js",
-    },
   },
 });
