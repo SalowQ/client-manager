@@ -76,10 +76,7 @@ const menuItems = [
   },
   {
     label: "Sair",
-    onClick: () => {
-      localStorage.removeItem("userName");
-      window.location.href = "/auth/login";
-    },
+    url: "/auth/login",
     icon: <span className="material-icons">logout</span>,
   },
 ];
@@ -94,7 +91,14 @@ const ClientsLayout = ({ children }: ClientsLayoutProps) => {
   const navigate = useNavigate();
 
   const handleNavigate = (url: string) => {
-    navigate(url);
+    if (url === "/auth/login") {
+      // Logout: limpa localStorage e navega
+      localStorage.removeItem("userName");
+      navigate("/auth/login");
+    } else {
+      // Navegação normal
+      navigate(url);
+    }
   };
 
   return (
