@@ -166,6 +166,7 @@ const ListClients = () => {
       deleteClientMutation.mutate(deletingClient.id, {
         onSuccess: handleCloseDeleteModal,
       });
+      handleCloseDeleteModal();
     }
   }
 
@@ -177,6 +178,7 @@ const ListClients = () => {
         "companyValuation",
         formatMoneyNumber(editingClient.companyValuation)
       );
+      handleCloseDeleteModal();
     } else {
       reset();
     }
